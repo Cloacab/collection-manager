@@ -49,34 +49,34 @@ public class UserInputManager {
         System.out.println("Enter " + fieldToRead.getName() + ":");
         Class<?> fieldClass = fieldToRead.getType();
 
-        if (fieldClass.getAnnotation(Complex.class) != null) {
+        if (fieldToRead.getAnnotation(Complex.class) != null) {
             writtenField = (T)readObject(fieldClass, false) ;
         }
 
         if (fieldClass.isEnum()) {
             System.out.println("Possible variants:");
-            for (Field field: fieldClass.getDeclaredFields()) {
-                System.out.print(field.getName() + " ");
+            for (Object field: fieldClass.getEnumConstants()) {
+                System.out.print(field + " ");
             }
             System.out.println();
+            System.out.print("->");
         }
 
         while (true) {
             String userInput = userInputScanner.nextLine();
-            Rules rules = fieldClass.getAnnotation(Rules.class);
+            Rules rules = fieldToRead.getAnnotation(Rules.class);
 
 //            if (userInput.equals("break")) {
 //
 //                break;
 //            }
 
-            for(Field rule: Rules.class.getDeclaredFields()) {
-                System.out.println(rule);
-            }
 
             if (rules != null) {
+                rules.nullable();
+                Rules.class.getDeclaredMethod("nullable").getDefaultValue();
 
-                if (rules.nullable()) {
+                if (rules.nullable() != (Boolean)Rules.class.getDeclaredMethod("nullable").getDefaultValue()) {
                     writtenField = userInput.isEmpty() ? null : (T) userInput;
                 } else {
                     System.out.println("Incorrect value for this field, try again.");
@@ -149,23 +149,23 @@ public class UserInputManager {
         }
     }
 
-    public static SpaceMarine readObject(boolean fromScript) {
-        String name;
-        Coordinates coordinates;
-        Long health;
-        AstartesCategory category;
-        Weapon weaponType;
-        MeleeWeapon meleeWeapon;
-        Chapter chapter;
+    // public static SpaceMarine readObject(boolean fromScript) {
+    //     String name;
+    //     Coordinates coordinates;
+    //     Long health;
+    //     AstartesCategory category;
+    //     Weapon weaponType;
+    //     MeleeWeapon meleeWeapon;
+    //     Chapter chapter;
 
-        userInputScanner.nextLine();
+    //     userInputScanner.nextLine();
 
-        Set<Class<?>> fields = Arrays.stream(SpaceMarine.class.getDeclaredFields())
-                .filter(x -> x.getAnnotation(UserInput.class) != null)
-                .map(Field::getType)
-                .collect(Collectors.toSet());
+    //     Set<Class<?>> fields = Arrays.stream(SpaceMarine.class.getDeclaredFields())
+    //             .filter(x -> x.getAnnotation(UserInput.class) != null)
+    //             .map(Field::getType)
+    //             .collect(Collectors.toSet());
 
-        return new SpaceMarine();
+    //     return new SpaceMarine();
 
-    }
+    // }
 }
