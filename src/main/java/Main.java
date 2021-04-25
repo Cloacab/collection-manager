@@ -19,7 +19,7 @@ public class Main {
         SpaceMarine one = new SpaceMarine();
         manager.spaceMarineList.put(2, one);
         manager.writeToScv("SpaceMarine.csv");
-        System.out.println(Arrays.toString(MeleeWeapon.class.getDeclaredFields()));
+        System.out.println(Arrays.toString(MeleeWeapon.class.getEnumConstants()));
         System.out.println(MeleeWeapon.class.getDeclaredFields()[0].getName());
 //        MeleeWeapon chain_sword = (MeleeWeapon) "CHAIN_SWORD";
 //        System.out.println(Arrays.toString(SpaceMarine.class.getConstructors()));
@@ -64,6 +64,8 @@ public class Main {
 //        UserInputManager.readObject(SpaceMarine.class, false);
 //        System.out.println(Weapon.valueOf("BOLT_RIFLE"));
         System.out.println(manager.spaceMarineList.toString());
+        SpaceMarine two = UserInputManager.readObject(SpaceMarine.class, false);
+        System.out.println(two);
 //        System.out.println(one.getChapter().getName() == null);
 //        for (CommandManager command:
 //             CommandManager.values()) {
