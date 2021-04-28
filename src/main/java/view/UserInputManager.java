@@ -5,6 +5,7 @@ import controller.CommandManager;
 import controller.commands.Command;
 import model.rules.Complex;
 import model.rules.Rule;
+import model.rules.Rules;
 import model.rules.UserInput;
 
 import java.lang.annotation.Annotation;
@@ -43,7 +44,8 @@ public class UserInputManager {
                 .filter(x -> x.getClass().getAnnotation(Rule.class) != null)
                 .collect(Collectors.toList());
         for (Annotation annotation : annotations) {
-            annotation.getClass().getDeclaredMethods()
+            annotation.getClass().getDeclaredMethods();
+            Rules;
         }
     }
 

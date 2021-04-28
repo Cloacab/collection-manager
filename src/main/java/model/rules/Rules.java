@@ -2,23 +2,20 @@ package model.rules;
 
 public enum Rules {
     NOTNULL {
-        @Override
-        public <T> boolean evaluate(T x, Rule rule) {
+        public <T> boolean evaluate(T x) {
             return x != null;
         }
     },
     LESSTHAN {
-        @Override
-        public <T> boolean evaluate(T x, Rule rule) {
-            return x <
+        public <T> boolean evaluate(T x, LessThan rule) {
+            return (long) x < rule.value();
         }
     },
     MORETHAN {
-        @Override
-        public <T> boolean evaluate(T x, Rule rule) {
-            return false;
+        public <T> boolean evaluate(T x, MoreThan rule) {
+            return (long) x > rule.value();
         }
-    }
+    };
 
-    abstract public <T> boolean evaluate(T x, Rule rule);
+
 }
