@@ -1,25 +1,26 @@
 package model;
 
-import javax.xml.validation.SchemaFactoryConfigurationError;
+import model.rules.*;
+
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpaceMarine {
     private final long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    @Rules @UserInput
+    @UserInput @NotNull
     private final String name; //Поле не может быть null, Строка не может быть пустой
-    @Rules @Complex @UserInput
+    @Complex @UserInput
     private Coordinates coordinates; //Поле не может быть null
     private LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    @Rules(leftBorder = 0) @UserInput
+    @UserInput @MoreThan(0)
     private long health; //Значение поля должно быть больше 0
-    @Rules(nullable = true) @UserInput
+    @UserInput
     private AstartesCategory category; //Поле может быть null
-    @Rules @UserInput
+    @UserInput @NotNull
     private Weapon weaponType; //Поле не может быть null
-    @Rules(nullable = true) @UserInput
+    @UserInput
     private MeleeWeapon meleeWeapon; //Поле может быть null
-    @Rules @Complex @UserInput
+    @Complex @UserInput
     private Chapter chapter; //Поле не может быть null
 
     static private final AtomicInteger counter = new AtomicInteger(-1);

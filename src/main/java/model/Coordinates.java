@@ -1,7 +1,10 @@
 package model;
 
+import model.rules.LessThan;
+import model.rules.UserInput;
+
 public class Coordinates {
-    @Rules(rightBorder = 412) @UserInput
+    @UserInput @LessThan(412)
     private long x; //Максимальное значение поля: 411
     @UserInput
     private float y;

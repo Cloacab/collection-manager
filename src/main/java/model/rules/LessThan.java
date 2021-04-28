@@ -1,11 +1,13 @@
-package model;
+package model.rules;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Rule
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserInput {
+public @interface LessThan {
+    long value() default Integer.MAX_VALUE;
 }

@@ -3,12 +3,14 @@ package view;
 import controller.CommandExecutionFailed;
 import controller.CommandManager;
 import controller.commands.Command;
-import model.*;
+import model.rules.Complex;
+import model.rules.Rule;
+import model.rules.UserInput;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,12 +38,14 @@ public class UserInputManager {
         }
     }
 
-//    private boolean checkField(Field field, Object value) {
-//        Rules rules = field.getAnnotation(Rules.class);
-//        for(Method rule : Rules.class.getDeclaredMethods()) {
-//            rule.getDefaultValue() == rules.
-//        }
-//    }
+    private boolean checkField(Field field) {
+        List<Annotation> annotations = Arrays.stream(field.getAnnotations())
+                .filter(x -> x.getClass().getAnnotation(Rule.class) != null)
+                .collect(Collectors.toList());
+        for (Annotation annotation : annotations) {
+            annotation.getClass().getDeclaredMethods()
+        }
+    }
 
     private static <T> T readField(Field fieldToRead, boolean fromScript) {
 
@@ -55,6 +59,7 @@ public class UserInputManager {
 
         if (fieldClass.isEnum()) {
             System.out.println("Possible variants:");
+            System.out.print("\t");
             for (Object field: fieldClass.getEnumConstants()) {
                 System.out.print(field + " ");
             }
@@ -64,7 +69,7 @@ public class UserInputManager {
 
         while (true) {
             String userInput = userInputScanner.nextLine();
-            Rules rules = fieldToRead.getAnnotation(Rules.class);
+            Rule rule = fieldToRead.getAnnotation(Rule.class);
 
 //            if (userInput.equals("break")) {
 //
@@ -72,29 +77,8 @@ public class UserInputManager {
 //            }
 
 
-            if (rules != null) {
-                rules.nullable();
-                Rules.class.getDeclaredMethod("nullable").getDefaultValue();
+            if (rule != null) {
 
-                if (rules.nullable() != (Boolean)Rules.class.getDeclaredMethod("nullable").getDefaultValue()) {
-                    writtenField = userInput.isEmpty() ? null : (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-                }
-                if (rules.epmtyString()) {
-                    writtenField = (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-                }
-                if (rules.leftBorder() < Long.parseLong(userInput)) {
-                    writtenField = (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-
-                }
             }
             break;
         }
