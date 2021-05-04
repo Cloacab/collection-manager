@@ -1,13 +1,15 @@
 package model.rules;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class LessThan implements Rules {
 
-@Rule
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface LessThan {
-    long value() default Integer.MAX_VALUE;
+    private final long value;
+
+    public LessThan (long value) {
+        this.value = value;
+    }
+
+    @Override
+    public <T> boolean validate(T value) {
+        return (long) value < this.value;
+    }
 }

@@ -1,10 +1,9 @@
 package model;
 
-import model.rules.LessThan;
 import model.rules.UserInput;
 
 public class Coordinates {
-    @UserInput @LessThan(412)
+    @UserInput
     private long x; //Максимальное значение поля: 411
     @UserInput
     private float y;

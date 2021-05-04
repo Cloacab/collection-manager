@@ -1,10 +1,9 @@
 package model;
 
-import model.rules.NotNull;
 import model.rules.UserInput;
 
 public class Chapter {
-    @UserInput @NotNull
+    @UserInput
     private String name; //Поле не может быть null, Строка не может быть пустой
 
     @UserInput
