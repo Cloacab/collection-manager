@@ -165,6 +165,8 @@ public class UserInputManager {
                 .map(Field::getType)
                 .collect(Collectors.toSet());
 
+        System.out.println("egor soset pinisis");
+
         return new SpaceMarine();
 
     }
