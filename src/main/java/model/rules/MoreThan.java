@@ -1,13 +1,15 @@
 package model.rules;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class MoreThan implements Rules{
 
-@Rule
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MoreThan {
-    long value() default Integer.MIN_VALUE;
+    private final long value;
+
+    public MoreThan(long value) {
+        this.value = value;
+    }
+
+    @Override
+    public <T> boolean validate(T value) {
+        return (long) value > this.value;
+    }
 }
