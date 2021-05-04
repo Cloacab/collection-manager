@@ -1,16 +1,9 @@
-import controller.CommandManager;
-import controller.commands.Command;
 import model.*;
+import model.rules.Rule;
 import view.UserInputManager;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,7 +12,7 @@ public class Main {
         SpaceMarine one = new SpaceMarine();
         manager.spaceMarineList.put(2, one);
         manager.writeToScv("SpaceMarine.csv");
-        System.out.println(Arrays.toString(MeleeWeapon.class.getDeclaredFields()));
+        System.out.println(Arrays.toString(MeleeWeapon.class.getEnumConstants()));
         System.out.println(MeleeWeapon.class.getDeclaredFields()[0].getName());
 //        MeleeWeapon chain_sword = (MeleeWeapon) "CHAIN_SWORD";
 //        System.out.println(Arrays.toString(SpaceMarine.class.getConstructors()));
@@ -53,7 +46,7 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        for(Method rule: Rules.class.getDeclaredMethods()) {
+        for(Method rule: Rule.class.getDeclaredMethods()) {
             System.out.println(rule.getDefaultValue());
         }
 //        List<Constructor<?>> constructor = Arrays.stream(SpaceMarine.class.getConstructors())
@@ -64,6 +57,8 @@ public class Main {
 //        UserInputManager.readObject(SpaceMarine.class, false);
 //        System.out.println(Weapon.valueOf("BOLT_RIFLE"));
         System.out.println(manager.spaceMarineList.toString());
+        SpaceMarine two = UserInputManager.readObject(SpaceMarine.class, false);
+        System.out.println(two);
 //        System.out.println(one.getChapter().getName() == null);
 //        for (CommandManager command:
 //             CommandManager.values()) {

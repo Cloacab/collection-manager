@@ -4,17 +4,27 @@ import controller.CommandExecutionFailed;
 import controller.CommandManager;
 import controller.commands.Command;
 import model.*;
+import model.rules.Complex;
+import model.rules.Rule;
+import model.rules.Rules;
+import model.rules.UserInput;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserInputManager {
     private static final Scanner userInputScanner = new Scanner(System.in);
     private Scanner scriptInputScanner;
+
+    private static final String INVALID_VALUE = "Invalid value for this field.";
+    private static final String TRY_AGAIN_MESSAGE = "Try again.";
+    private static final String INVALID_STRING = "Field must not be empty.";
+    private static final String INVALID_X = "Field must be less than or equal 411";
+    private static final String INVALID_HEALTH = "Field must be more than 0";
 
     public UserInputManager () {
     }
@@ -36,10 +46,13 @@ public class UserInputManager {
         }
     }
 
-//    private boolean checkField(Field field, Object value) {
-//        Rules rules = field.getAnnotation(Rules.class);
-//        for(Method rule : Rules.class.getDeclaredMethods()) {
-//            rule.getDefaultValue() == rules.
+//    private boolean checkField(Field field) {
+//        List<Annotation> annotations = Arrays.stream(field.getAnnotations())
+//                .filter(x -> x.getClass().getAnnotation(Rule.class) != null)
+//                .collect(Collectors.toList());
+//        for (Annotation annotation : annotations) {
+//            annotation.getClass().getDeclaredMethods();
+//            Rules;
 //        }
 //    }
 
@@ -49,55 +62,42 @@ public class UserInputManager {
         System.out.println("Enter " + fieldToRead.getName() + ":");
         Class<?> fieldClass = fieldToRead.getType();
 
-        if (fieldClass.getAnnotation(Complex.class) != null) {
+        if (fieldToRead.getAnnotation(Complex.class) != null) {
             writtenField = (T)readObject(fieldClass, false) ;
         }
 
         if (fieldClass.isEnum()) {
             System.out.println("Possible variants:");
-            for (Field field: fieldClass.getDeclaredFields()) {
-                System.out.print(field.getName() + " ");
+            System.out.print("\t");
+            for (Object field: fieldClass.getEnumConstants()) {
+                System.out.print(field + " ");
             }
             System.out.println();
+            System.out.print("->");
         }
 
-        while (true) {
-            String userInput = userInputScanner.nextLine();
-            Rules rules = fieldClass.getAnnotation(Rules.class);
+        String userInput = userInputScanner.nextLine();
+        writtenField = (T) userInput;
 
-//            if (userInput.equals("break")) {
-//
-//                break;
+//        while (true) {
+//            String userInput = userInputScanner.nextLine();
+//            Rule rule = fieldToRead.getAnnotation(Rule.class);
+//            if (fieldClass.isEnum()) {
+//                writtenField = fieldClass.isInstance()
 //            }
-
-            for(Field rule: Rules.class.getDeclaredFields()) {
-                System.out.println(rule);
-            }
-
-            if (rules != null) {
-
-                if (rules.nullable()) {
-                    writtenField = userInput.isEmpty() ? null : (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-                }
-                if (rules.epmtyString()) {
-                    writtenField = (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-                }
-                if (rules.leftBorder() < Long.parseLong(userInput)) {
-                    writtenField = (T) userInput;
-                } else {
-                    System.out.println("Incorrect value for this field, try again.");
-                    continue;
-
-                }
-            }
-            break;
-        }
+//            writtenField = (T) userInput;
+//            break;
+////            if (userInput.equals("break")) {
+////
+////                break;
+////            }
+//
+//
+////            if (rule != null) {
+////
+////            }
+////            break;
+//        }
 
         return writtenField;
     }
@@ -128,8 +128,6 @@ public class UserInputManager {
 
     public static <T> T readObject(Class<T> tClass, boolean fromScript) {
 
-        System.out.println("Starting object reading. Type 'break' to cancel object reading.");
-
         List<Field> fields = Arrays.stream(tClass.getDeclaredFields())
                 .filter(x -> x.getAnnotation(UserInput.class) != null)
                 .collect(Collectors.toList());
@@ -149,25 +147,74 @@ public class UserInputManager {
         }
     }
 
-    public static SpaceMarine readObject(boolean fromScript) {
-        String name;
-        Coordinates coordinates;
-        Long health;
-        AstartesCategory category;
-        Weapon weaponType;
-        MeleeWeapon meleeWeapon;
-        Chapter chapter;
+     public static SpaceMarine readObject(boolean fromScript) {
+         String name;
+         long x;
+         float y;
+         Coordinates coordinates;
+         Long health;
+         AstartesCategory category;
+         Weapon weaponType;
+         MeleeWeapon meleeWeapon;
+         Chapter chapter;
+         String userInput;
 
-        userInputScanner.nextLine();
+         userInputScanner.nextLine();
 
-        Set<Class<?>> fields = Arrays.stream(SpaceMarine.class.getDeclaredFields())
-                .filter(x -> x.getAnnotation(UserInput.class) != null)
-                .map(Field::getType)
-                .collect(Collectors.toSet());
+         while (true) {
+             System.out.print("Enter space marine's name:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+                 continue;
+             } else {
+                 name = userInput;
+                 break;
+             }
+         }
 
-        System.out.println("egor soset pinisis");
+         while (true) {
+             System.out.print("Enter space marine's x coordinate:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+                 continue;
+             }
+             if (Long.parseLong(userInput) > 411) {
+                 System.out.println("Invalid value for this field. X coordinate must be <= 411. Try again");
+             } else {
+                 x = Long.parseLong(userInput);
+                 break;
+             }
+         }
 
-        return new SpaceMarine();
+         while (true) {
+             System.out.print("Enter space marine's y coordinate:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+             } else {
+                 y = Float.parseFloat(userInput);
+                 break;
+             }
+         }
 
-    }
+         while (true) {
+             System.out.print("Enter space marine's healt:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+                 continue;
+             }
+             if (Long.parseLong(userInput) <= 0) {
+                 System.out.println(INVALID_VALUE + " " + INVALID_HEALTH + " " + TRY_AGAIN_MESSAGE);
+             } else {
+                 health = Long.parseLong(userInput);
+                 break;
+             }
+         }
+
+         return new SpaceMarine();
+
+     }
 }

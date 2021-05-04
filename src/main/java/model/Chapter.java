@@ -1,10 +1,12 @@
 package model;
 
+import model.rules.UserInput;
+
 public class Chapter {
-    @Rules @UserInput
+    @UserInput
     private String name; //Поле не может быть null, Строка не может быть пустой
 
-    @Rules(nullable = true) @UserInput
+    @UserInput
     private String world; //Поле может быть null
 
     public Chapter() {
