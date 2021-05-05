@@ -57,7 +57,7 @@ public class Main {
 //        UserInputManager.readObject(SpaceMarine.class, false);
 //        System.out.println(Weapon.valueOf("BOLT_RIFLE"));
         System.out.println(manager.spaceMarineList.toString());
-        SpaceMarine two = UserInputManager.readObject(SpaceMarine.class, false);
+        SpaceMarine two = UserInputManager.readObject();
         System.out.println(two);
 //        System.out.println(one.getChapter().getName() == null);
 //        for (CommandManager command:
