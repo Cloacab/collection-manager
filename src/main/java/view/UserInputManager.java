@@ -147,7 +147,7 @@ public class UserInputManager {
         }
     }
 
-     public static SpaceMarine readObject(boolean fromScript) {
+     public static SpaceMarine readObject() {
          String name;
          long x;
          float y;
@@ -156,6 +156,8 @@ public class UserInputManager {
          AstartesCategory category;
          Weapon weaponType;
          MeleeWeapon meleeWeapon;
+         String chapterName;
+         String chapterWorld;
          Chapter chapter;
          String userInput;
 
@@ -199,8 +201,9 @@ public class UserInputManager {
              }
          }
 
+
          while (true) {
-             System.out.print("Enter space marine's healt:\n\t->");
+             System.out.print("Enter space marine's health:\n\t->");
              userInput = userInputScanner.nextLine();
              if (userInput.isEmpty()) {
                  System.out.println("Invalid value for this field. Field must not be empty. Try again.");
@@ -214,7 +217,89 @@ public class UserInputManager {
              }
          }
 
-         return new SpaceMarine();
+         while (true) {
+             System.out.println("Enter space marine's category:");
+             System.out.println("Possible variants: " + Arrays.toString(AstartesCategory.class.getEnumConstants()) + ".");
+             System.out.print("->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 category = null;
+                 break;
+             } else {
+                 try {
+                     category = AstartesCategory.valueOf(userInput);
+                     break;
+                 } catch (Exception e) {
+                     System.out.println("Cannot resolve enum constant. Try again.");
+                     continue;
+                 }
+             }
+         }
+
+         while (true) {
+             System.out.println("Enter space marine's weapon:");
+             System.out.println("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".");
+             System.out.print("->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
+             } else {
+                 try {
+                     weaponType = Weapon.valueOf(userInput);
+                     break;
+                 } catch (Exception e) {
+                     System.out.println("Cannot resolve enum constant. Try again.");
+                     continue;
+                 }
+             }
+         }
+
+         while (true) {
+             System.out.println("Enter space marine's melee weapon:");
+             System.out.println("Possible variants: " + Arrays.toString(MeleeWeapon.class.getEnumConstants()) + ".");
+             System.out.print("->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 meleeWeapon = null;
+                 break;
+             } else {
+                 try {
+                     meleeWeapon = MeleeWeapon.valueOf(userInput);
+                     break;
+                 } catch (Exception e) {
+                     System.out.println("Cannot resolve enum constant. Try again.");
+                     continue;
+                 }
+             }
+         }
+
+         while (true) {
+             System.out.print("Enter space marine's chapter name:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                 System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
+             } else {
+                 chapterName = userInput;
+                 break;
+             }
+         }
+
+         while (true) {
+             System.out.print("Enter space marine's chapter world:\n\t->");
+             userInput = userInputScanner.nextLine();
+             if (userInput.isEmpty()) {
+                chapterWorld = null;
+                 break;
+             } else {
+                 chapterWorld = userInput;
+                 break;
+             }
+         }
+
+         coordinates = new Coordinates(x, y);
+         chapter = new Chapter(chapterName, chapterWorld);
+
+         return new SpaceMarine(name, coordinates, health, category, weaponType, meleeWeapon, chapter);
 
      }
 }
