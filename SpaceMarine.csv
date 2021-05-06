@@ -1,7 +1,7 @@
 key,id,name,coordinates_x,coordinates_y,creationDate,health,category,weaponType,meleeWeapon,chapter_name,chapter_world
 0,0,kek,3,3.0,2021-04-04,100,SCOUT,BOLT_RIFLE,CHAIN_SWORD,aaaz,ac
 1,1,kek,3,3.0,2021-04-04,100,SCOUT,BOLT_RIFLE,POWER_SWORD,aaab,b
-2,6,mock6,0,0.0,2021-05-06,106,SCOUT,BOLT_RIFLE,CHAIN_SWORD,xd,
+2,2,mock6,0,0.0,2021-05-06,106,SCOUT,BOLT_RIFLE,CHAIN_SWORD,xd,
 3,3,kek,3,3.0,2021-04-04,100,SCOUT,BOLT_RIFLE,POWER_BLADE,aaab,c
 4,4,kek,3,3.0,2021-04-04,100,SCOUT,BOLT_RIFLE,POWER_FIST,fsdfs,df
 5,5,kek,3,3.0,2021-04-04,100,SCOUT,BOLT_RIFLE,,sdfe,abd

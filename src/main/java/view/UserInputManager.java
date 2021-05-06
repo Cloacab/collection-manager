@@ -10,8 +10,9 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class UserInputManager {
-    private static final Scanner userInputScanner = new Scanner(System.in);
+    private static Scanner userInputScanner = new Scanner(System.in);
     private Scanner scriptInputScanner;
+    private static boolean fromScript = false;
 
     private static final String INVALID_VALUE = "Invalid value for this field.";
     private static final String TRY_AGAIN_MESSAGE = "Try again.";
@@ -26,11 +27,18 @@ public class UserInputManager {
         return userInputScanner;
     }
 
-    public static void startListenning(boolean fromScript, Scanner scanner) {
-        Scanner inputScanner = scanner != null ? scanner : userInputScanner;
+    public static void setUserInputScanner(Scanner userInputScanner) {
+        UserInputManager.userInputScanner = userInputScanner;
+    }
+
+    public static void setFromScript(boolean fromScript) {
+        UserInputManager.fromScript = fromScript;
+    }
+
+    public static void startListening() {
         if(!fromScript) {System.out.println("Enter command or type 'help' for list of all commands.");}
         while (true) {
-            String userInput = inputScanner.nextLine();
+            String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
                 Command command = CommandManager.valueOf(userCommand.toUpperCase(Locale.ROOT)).getCommand();
@@ -43,100 +51,12 @@ public class UserInputManager {
                     System.out.println("Command cannot be executed, check arguments and try again.");
                 }
             }
-
+            if (!userInputScanner.hasNext() && fromScript) {
+                System.out.println("Script file ended.");
+                userInputScanner = new Scanner(System.in);
+            }
         }
     }
-
-//    private static <T> T readField(Field fieldToRead, boolean fromScript) {
-//
-//        T writtenField = null;
-//        System.out.println("Enter " + fieldToRead.getName() + ":");
-//        Class<?> fieldClass = fieldToRead.getType();
-//
-//        if (fieldToRead.getAnnotation(Complex.class) != null) {
-//            writtenField = (T)readObject(fieldClass, false) ;
-//        }
-//
-//        if (fieldClass.isEnum()) {
-//            System.out.println("Possible variants:");
-//            System.out.print("\t");
-//            for (Object field: fieldClass.getEnumConstants()) {
-//                System.out.print(field + " ");
-//            }
-//            System.out.println();
-//            System.out.print("->");
-//        }
-//
-//        String userInput = userInputScanner.nextLine();
-//        writtenField = (T) userInput;
-
-//        while (true) {
-//            String userInput = userInputScanner.nextLine();
-//            Rule rule = fieldToRead.getAnnotation(Rule.class);
-//            if (fieldClass.isEnum()) {
-//                writtenField = fieldClass.isInstance()
-//            }
-//            writtenField = (T) userInput;
-//            break;
-////            if (userInput.equals("break")) {
-////
-////                break;
-////            }
-//
-//
-////            if (rule != null) {
-////
-////            }
-////            break;
-//        }
-
-//        return writtenField;
-//    }
-
-//    private static Constructor<?> getRightConstructor(Class<?> clazz) {
-//        List<Class<?>> fieldClasses = Arrays.stream(clazz.getDeclaredFields())
-//                .filter(x -> x.getAnnotation(UserInput.class) != null)
-//                .map(Field::getType)
-//                .collect(Collectors.toList());
-//
-//        Constructor<?> rightConstructor = null;
-//
-//        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-//            try {
-//                Class<?>[] params =  constructor.getParameterTypes();
-//                if (Arrays.equals(fieldClasses.toArray(Class<?>[]::new), params)){
-//                    rightConstructor = constructor;
-//                    rightConstructor.setAccessible(true);
-//                    break;
-//                }
-//            } catch (Exception ignored) {
-//
-//            }
-//        }
-//
-//        return rightConstructor;
-//    }
-
-//    public static <T> T readObject(Class<T> tClass, boolean fromScript) {
-//
-//        List<Field> fields = Arrays.stream(tClass.getDeclaredFields())
-//                .filter(x -> x.getAnnotation(UserInput.class) != null)
-//                .collect(Collectors.toList());
-//
-//        Constructor<?> rightConstructor = getRightConstructor(tClass);
-//        List<Object> varargs = new ArrayList<>();
-//
-//        for (Field field : fields) {
-//            varargs.add(readField(field, fromScript));
-//        }
-//
-//        try {
-//            return tClass.cast(rightConstructor.newInstance(varargs.toArray(Object[]::new)));
-//        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
      public static SpaceMarine readObject() {
          String name;
@@ -153,144 +73,157 @@ public class UserInputManager {
          String userInput;
 
 //         userInputScanner.nextLine();
-
-         while (true) {
-             System.out.print("Enter space marine's name:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
-                 continue;
-             } else {
-                 name = userInput;
-                 break;
-             }
-         }
-
-         while (true) {
-             System.out.print("Enter space marine's x coordinate:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
-                 continue;
-             }
-             if (Long.parseLong(userInput) > 411) {
-                 System.out.println("Invalid value for this field. X coordinate must be <= 411. Try again");
-             } else {
-                 x = Long.parseLong(userInput);
-                 break;
-             }
-         }
-
-         while (true) {
-             System.out.print("Enter space marine's y coordinate:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
-             } else {
-                 y = Float.parseFloat(userInput);
-                 break;
-             }
-         }
-
-
-         while (true) {
-             System.out.print("Enter space marine's health:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println("Invalid value for this field. Field must not be empty. Try again.");
-                 continue;
-             }
-             if (Long.parseLong(userInput) <= 0) {
-                 System.out.println(INVALID_VALUE + " " + INVALID_HEALTH + " " + TRY_AGAIN_MESSAGE);
-             } else {
-                 health = Long.parseLong(userInput);
-                 break;
-             }
-         }
-
-         while (true) {
-             System.out.println("Enter space marine's category:");
-             System.out.println("Possible variants: " + Arrays.toString(AstartesCategory.class.getEnumConstants()) + ".");
-             System.out.print("->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 category = null;
-                 break;
-             } else {
-                 try {
-                     category = AstartesCategory.valueOf(userInput);
-                     break;
-                 } catch (Exception e) {
-                     System.out.println("Cannot resolve enum constant. Try again.");
+         if (!fromScript) {
+             while (true) {
+                 System.out.print("Enter space marine's name:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println("Invalid value for this field. Field must not be empty. Try again.");
                      continue;
+                 } else {
+                     name = userInput;
+                     break;
                  }
              }
-         }
 
-         while (true) {
-             System.out.println("Enter space marine's weapon:");
-             System.out.println("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".");
-             System.out.print("->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
-             } else {
-                 try {
-                     weaponType = Weapon.valueOf(userInput);
-                     break;
-                 } catch (Exception e) {
-                     System.out.println("Cannot resolve enum constant. Try again.");
+             while (true) {
+                 System.out.print("Enter space marine's x coordinate:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println("Invalid value for this field. Field must not be empty. Try again.");
                      continue;
                  }
-             }
-         }
-
-         while (true) {
-             System.out.println("Enter space marine's melee weapon:");
-             System.out.println("Possible variants: " + Arrays.toString(MeleeWeapon.class.getEnumConstants()) + ".");
-             System.out.print("->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 meleeWeapon = null;
-                 break;
-             } else {
-                 try {
-                     meleeWeapon = MeleeWeapon.valueOf(userInput);
+                 if (Long.parseLong(userInput) > 411) {
+                     System.out.println("Invalid value for this field. X coordinate must be <= 411. Try again");
+                 } else {
+                     x = Long.parseLong(userInput);
                      break;
-                 } catch (Exception e) {
-                     System.out.println("Cannot resolve enum constant. Try again.");
-                     continue;
                  }
              }
-         }
 
-         while (true) {
-             System.out.print("Enter space marine's chapter name:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                 System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
-             } else {
-                 chapterName = userInput;
-                 break;
+             while (true) {
+                 System.out.print("Enter space marine's y coordinate:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+                 } else {
+                     y = Float.parseFloat(userInput);
+                     break;
+                 }
              }
-         }
 
-         while (true) {
-             System.out.print("Enter space marine's chapter world:\n\t->");
-             userInput = userInputScanner.nextLine();
-             if (userInput.isEmpty()) {
-                chapterWorld = null;
-                 break;
-             } else {
-                 chapterWorld = userInput;
-                 break;
+
+             while (true) {
+                 System.out.print("Enter space marine's health:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println("Invalid value for this field. Field must not be empty. Try again.");
+                     continue;
+                 }
+                 if (Long.parseLong(userInput) <= 0) {
+                     System.out.println(INVALID_VALUE + " " + INVALID_HEALTH + " " + TRY_AGAIN_MESSAGE);
+                 } else {
+                     health = Long.parseLong(userInput);
+                     break;
+                 }
              }
+
+             while (true) {
+                 System.out.println("Enter space marine's category:");
+                 System.out.println("Possible variants: " + Arrays.toString(AstartesCategory.class.getEnumConstants()) + ".");
+                 System.out.print("->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     category = null;
+                     break;
+                 } else {
+                     try {
+                         category = AstartesCategory.valueOf(userInput);
+                         break;
+                     } catch (Exception e) {
+                         System.out.println("Cannot resolve enum constant. Try again.");
+                         continue;
+                     }
+                 }
+             }
+
+             while (true) {
+                 System.out.println("Enter space marine's weapon:");
+                 System.out.println("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".");
+                 System.out.print("->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
+                 } else {
+                     try {
+                         weaponType = Weapon.valueOf(userInput);
+                         break;
+                     } catch (Exception e) {
+                         System.out.println("Cannot resolve enum constant. Try again.");
+                         continue;
+                     }
+                 }
+             }
+
+             while (true) {
+                 System.out.println("Enter space marine's melee weapon:");
+                 System.out.println("Possible variants: " + Arrays.toString(MeleeWeapon.class.getEnumConstants()) + ".");
+                 System.out.print("->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     meleeWeapon = null;
+                     break;
+                 } else {
+                     try {
+                         meleeWeapon = MeleeWeapon.valueOf(userInput);
+                         break;
+                     } catch (Exception e) {
+                         System.out.println("Cannot resolve enum constant. Try again.");
+                         continue;
+                     }
+                 }
+             }
+
+             while (true) {
+                 System.out.print("Enter space marine's chapter name:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
+                 } else {
+                     chapterName = userInput;
+                     break;
+                 }
+             }
+
+             while (true) {
+                 System.out.print("Enter space marine's chapter world:\n\t->");
+                 userInput = userInputScanner.nextLine();
+                 if (userInput.isEmpty()) {
+                     chapterWorld = null;
+                     break;
+                 } else {
+                     chapterWorld = userInput;
+                     break;
+                 }
+             }
+
+
+         } else {
+             name = userInputScanner.nextLine();
+             x = Long.parseLong(userInputScanner.nextLine());
+             y = Float.parseFloat(userInputScanner.nextLine());
+             health = Long.parseLong(userInputScanner.nextLine());
+             category = AstartesCategory.valueOf(userInputScanner.nextLine());
+             weaponType = Weapon.valueOf(userInputScanner.nextLine());
+             String meleeWeaponSt = userInputScanner.nextLine();
+             meleeWeapon = meleeWeaponSt.isEmpty() ? null : MeleeWeapon.valueOf(meleeWeaponSt);
+             chapterName = userInputScanner.nextLine();
+             String chapterWorldSt = userInputScanner.nextLine();
+             chapterWorld = chapterWorldSt.isEmpty() ? null : chapterWorldSt;
          }
 
          coordinates = new Coordinates(x, y);
          chapter = new Chapter(chapterName, chapterWorld);
-
          return new SpaceMarine(name, coordinates, health, category, weaponType, meleeWeapon, chapter);
-
      }
 }

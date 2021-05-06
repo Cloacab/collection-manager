@@ -1,11 +1,7 @@
 package model;
 
-import model.rules.UserInput;
-
 public class Coordinates {
-    @UserInput
     private long x; //Максимальное значение поля: 411
-    @UserInput
     private float y;
 
     public Coordinates(long x, float y) {

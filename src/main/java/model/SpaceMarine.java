@@ -1,26 +1,17 @@
 package model;
 
-import model.rules.*;
-
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpaceMarine {
-    private final long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    @UserInput
+    private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private final String name; //Поле не может быть null, Строка не может быть пустой
-    @Complex @UserInput
     private Coordinates coordinates; //Поле не может быть null
     private LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    @UserInput
     private long health; //Значение поля должно быть больше 0
-    @UserInput
     private AstartesCategory category; //Поле может быть null
-    @UserInput
     private Weapon weaponType; //Поле не может быть null
-    @UserInput
     private MeleeWeapon meleeWeapon; //Поле может быть null
-    @Complex @UserInput
     private Chapter chapter; //Поле не может быть null
 
     static private final AtomicInteger counter = new AtomicInteger(-1);
@@ -83,6 +74,10 @@ public class SpaceMarine {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

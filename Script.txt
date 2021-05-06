@@ -1,0 +1,15 @@
+show
+remove_greater_key 3
+update 2
+egor
+4
+5
+123
+TACTICAL
+BOLT_RIFLE
+POWER_BLADE
+odin
+dva
+show
+help
+info
