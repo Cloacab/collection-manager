@@ -148,15 +148,15 @@ public class SpaceMarine {
     @Override
     public String toString() {
         return "SpaceMarine{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", coordinates=" + coordinates +
-                ", creationDate=" + creationDate +
-                ", health=" + health +
-                ", category=" + category +
-                ", weaponType=" + weaponType +
-                ", meleeWeapon=" + meleeWeapon +
-                ", chapter=" + chapter +
-                '}';
+                "\n\tid=" + id +
+                "\n\tname='" + name + '\'' +
+                "\n\tcoordinates=" + coordinates +
+                "\n\tcreationDate=" + creationDate +
+                "\n\thealth=" + health +
+                "\n\tcategory=" + category +
+                "\n\tweaponType=" + weaponType +
+                "\n\tmeleeWeapon=" + meleeWeapon +
+                "\n\tchapter=" + chapter +
+                "}\n";
     }
 }

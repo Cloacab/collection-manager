@@ -1,14 +1,15 @@
 import controller.CommandExecutionFailed;
-import controller.commands.*;
-import model.*;
-import model.rules.Rule;
-import view.UserInputManager;
+import controller.commands.Command;
+import controller.commands.Show;
+import model.MeleeWeapon;
+import model.SpaceMarine;
+import model.SpaceMarineManager;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
+
         SpaceMarineManager manager = SpaceMarineManager.getInstance();
         manager.readFromCsv("SpaceMarineList.csv");
         SpaceMarine one = new SpaceMarine();
@@ -61,7 +62,7 @@ public class Main {
         System.out.println(manager.spaceMarineList.toString());
 //        SpaceMarine two = UserInputManager.readObject();
 //        System.out.println(two);
-        Command command = new Insert();
+        Command command = new Show();
         String [] array = {"3", "3"};
         try {
             command.execute(array);

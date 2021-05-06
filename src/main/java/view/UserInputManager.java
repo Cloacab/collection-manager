@@ -4,17 +4,10 @@ import controller.CommandExecutionFailed;
 import controller.CommandManager;
 import controller.commands.Command;
 import model.*;
-import model.rules.Complex;
-import model.rules.Rule;
-import model.rules.Rules;
-import model.rules.UserInput;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class UserInputManager {
     private static final Scanner userInputScanner = new Scanner(System.in);
@@ -33,56 +26,49 @@ public class UserInputManager {
         return userInputScanner;
     }
 
-    public void startListenning() {
-        System.out.println("Enter command or type 'help' for list of all commands.");
+    public static void startListenning(boolean fromScript, Scanner scanner) {
+        Scanner inputScanner = scanner != null ? scanner : userInputScanner;
+        if(!fromScript) {System.out.println("Enter command or type 'help' for list of all commands.");}
         while (true) {
-            String userInput = userInputScanner.nextLine();
+            String userInput = inputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
                 Command command = CommandManager.valueOf(userCommand.toUpperCase(Locale.ROOT)).getCommand();
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
-                System.out.println("Command was not found, try again.");
+                if(!fromScript) {System.out.println("Command was not found, try again.");}
             } catch (CommandExecutionFailed e) {
-                System.out.println(e.getMessage());
-                System.out.println("Command cannot be executed, check arguments and try again.");
+                if(!fromScript) {
+                    System.out.println(e.getMessage());
+                    System.out.println("Command cannot be executed, check arguments and try again.");
+                }
             }
 
         }
     }
 
-//    private boolean checkField(Field field) {
-//        List<Annotation> annotations = Arrays.stream(field.getAnnotations())
-//                .filter(x -> x.getClass().getAnnotation(Rule.class) != null)
-//                .collect(Collectors.toList());
-//        for (Annotation annotation : annotations) {
-//            annotation.getClass().getDeclaredMethods();
-//            Rules;
+//    private static <T> T readField(Field fieldToRead, boolean fromScript) {
+//
+//        T writtenField = null;
+//        System.out.println("Enter " + fieldToRead.getName() + ":");
+//        Class<?> fieldClass = fieldToRead.getType();
+//
+//        if (fieldToRead.getAnnotation(Complex.class) != null) {
+//            writtenField = (T)readObject(fieldClass, false) ;
 //        }
-//    }
-
-    private static <T> T readField(Field fieldToRead, boolean fromScript) {
-
-        T writtenField = null;
-        System.out.println("Enter " + fieldToRead.getName() + ":");
-        Class<?> fieldClass = fieldToRead.getType();
-
-        if (fieldToRead.getAnnotation(Complex.class) != null) {
-            writtenField = (T)readObject(fieldClass, false) ;
-        }
-
-        if (fieldClass.isEnum()) {
-            System.out.println("Possible variants:");
-            System.out.print("\t");
-            for (Object field: fieldClass.getEnumConstants()) {
-                System.out.print(field + " ");
-            }
-            System.out.println();
-            System.out.print("->");
-        }
-
-        String userInput = userInputScanner.nextLine();
-        writtenField = (T) userInput;
+//
+//        if (fieldClass.isEnum()) {
+//            System.out.println("Possible variants:");
+//            System.out.print("\t");
+//            for (Object field: fieldClass.getEnumConstants()) {
+//                System.out.print(field + " ");
+//            }
+//            System.out.println();
+//            System.out.print("->");
+//        }
+//
+//        String userInput = userInputScanner.nextLine();
+//        writtenField = (T) userInput;
 
 //        while (true) {
 //            String userInput = userInputScanner.nextLine();
@@ -104,53 +90,53 @@ public class UserInputManager {
 ////            break;
 //        }
 
-        return writtenField;
-    }
+//        return writtenField;
+//    }
 
-    private static Constructor<?> getRightConstructor(Class<?> clazz) {
-        List<Class<?>> fieldClasses = Arrays.stream(clazz.getDeclaredFields())
-                .filter(x -> x.getAnnotation(UserInput.class) != null)
-                .map(Field::getType)
-                .collect(Collectors.toList());
+//    private static Constructor<?> getRightConstructor(Class<?> clazz) {
+//        List<Class<?>> fieldClasses = Arrays.stream(clazz.getDeclaredFields())
+//                .filter(x -> x.getAnnotation(UserInput.class) != null)
+//                .map(Field::getType)
+//                .collect(Collectors.toList());
+//
+//        Constructor<?> rightConstructor = null;
+//
+//        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+//            try {
+//                Class<?>[] params =  constructor.getParameterTypes();
+//                if (Arrays.equals(fieldClasses.toArray(Class<?>[]::new), params)){
+//                    rightConstructor = constructor;
+//                    rightConstructor.setAccessible(true);
+//                    break;
+//                }
+//            } catch (Exception ignored) {
+//
+//            }
+//        }
+//
+//        return rightConstructor;
+//    }
 
-        Constructor<?> rightConstructor = null;
-
-        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-            try {
-                Class<?>[] params =  constructor.getParameterTypes();
-                if (Arrays.equals(fieldClasses.toArray(Class<?>[]::new), params)){
-                    rightConstructor = constructor;
-                    rightConstructor.setAccessible(true);
-                    break;
-                }
-            } catch (Exception ignored) {
-
-            }
-        }
-
-        return rightConstructor;
-    }
-
-    public static <T> T readObject(Class<T> tClass, boolean fromScript) {
-
-        List<Field> fields = Arrays.stream(tClass.getDeclaredFields())
-                .filter(x -> x.getAnnotation(UserInput.class) != null)
-                .collect(Collectors.toList());
-
-        Constructor<?> rightConstructor = getRightConstructor(tClass);
-        List<Object> varargs = new ArrayList<>();
-
-        for (Field field : fields) {
-            varargs.add(readField(field, fromScript));
-        }
-
-        try {
-            return tClass.cast(rightConstructor.newInstance(varargs.toArray(Object[]::new)));
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public static <T> T readObject(Class<T> tClass, boolean fromScript) {
+//
+//        List<Field> fields = Arrays.stream(tClass.getDeclaredFields())
+//                .filter(x -> x.getAnnotation(UserInput.class) != null)
+//                .collect(Collectors.toList());
+//
+//        Constructor<?> rightConstructor = getRightConstructor(tClass);
+//        List<Object> varargs = new ArrayList<>();
+//
+//        for (Field field : fields) {
+//            varargs.add(readField(field, fromScript));
+//        }
+//
+//        try {
+//            return tClass.cast(rightConstructor.newInstance(varargs.toArray(Object[]::new)));
+//        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
      public static SpaceMarine readObject() {
          String name;

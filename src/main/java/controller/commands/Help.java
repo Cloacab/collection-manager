@@ -3,11 +3,12 @@ package controller.commands;
 import controller.CommandExecutionFailed;
 import controller.CommandManager;
 
+import java.util.Arrays;
+
 public class Help implements Command {
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
-        for (CommandManager commandManager : CommandManager.values()) {
-            System.out.println(commandManager.getDescription());
-        }
+        Arrays.stream(CommandManager.values())
+                .forEach(a -> System.out.println(a.getDescription()));
     }
 }

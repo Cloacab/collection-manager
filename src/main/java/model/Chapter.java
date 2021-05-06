@@ -29,8 +29,8 @@ public class Chapter {
     @Override
     public String toString() {
         return "Chapter{" +
-                "name='" + name + '\'' +
-                ", world='" + world + '\'' +
-                '}';
+                "\n\t\tname='" + name + '\'' +
+                "\n\t\tworld='" + world + '\'' +
+                "\n\t}\n";
     }
 }
