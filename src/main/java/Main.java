@@ -1,3 +1,5 @@
+import controller.CommandExecutionFailed;
+import controller.commands.*;
 import model.*;
 import model.rules.Rule;
 import view.UserInputManager;
@@ -46,9 +48,9 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        for(Method rule: Rule.class.getDeclaredMethods()) {
-            System.out.println(rule.getDefaultValue());
-        }
+//        for(Method rule: Rule.class.getDeclaredMethods()) {
+//            System.out.println(rule.getDefaultValue());
+//        }
 //        List<Constructor<?>> constructor = Arrays.stream(SpaceMarine.class.getConstructors())
 //                .filter(x -> Arrays.stream(x.get())
 //                        .allMatch(y -> y.getAnnotation(UserInput.class) != null))
@@ -57,8 +59,16 @@ public class Main {
 //        UserInputManager.readObject(SpaceMarine.class, false);
 //        System.out.println(Weapon.valueOf("BOLT_RIFLE"));
         System.out.println(manager.spaceMarineList.toString());
-        SpaceMarine two = UserInputManager.readObject();
-        System.out.println(two);
+//        SpaceMarine two = UserInputManager.readObject();
+//        System.out.println(two);
+        Command command = new Insert();
+        String [] array = {"3", "3"};
+        try {
+            command.execute(array);
+        } catch (CommandExecutionFailed commandExecutionFailed) {
+            commandExecutionFailed.printStackTrace();
+        }
+        System.out.println(manager.spaceMarineList.toString());
 //        System.out.println(one.getChapter().getName() == null);
 //        for (CommandManager command:
 //             CommandManager.values()) {

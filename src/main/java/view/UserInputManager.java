@@ -29,6 +29,10 @@ public class UserInputManager {
     public UserInputManager () {
     }
 
+    public static Scanner getUserInputScanner() {
+        return userInputScanner;
+    }
+
     public void startListenning() {
         System.out.println("Enter command or type 'help' for list of all commands.");
         while (true) {
@@ -40,6 +44,7 @@ public class UserInputManager {
             } catch (IllegalArgumentException e) {
                 System.out.println("Command was not found, try again.");
             } catch (CommandExecutionFailed e) {
+                System.out.println(e.getMessage());
                 System.out.println("Command cannot be executed, check arguments and try again.");
             }
 
@@ -161,7 +166,7 @@ public class UserInputManager {
          Chapter chapter;
          String userInput;
 
-         userInputScanner.nextLine();
+//         userInputScanner.nextLine();
 
          while (true) {
              System.out.print("Enter space marine's name:\n\t->");

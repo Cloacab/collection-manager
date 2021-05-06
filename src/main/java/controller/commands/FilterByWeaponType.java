@@ -3,21 +3,29 @@ package controller.commands;
 import controller.CommandExecutionFailed;
 import model.SpaceMarine;
 import model.Weapon;
+import view.UserInputManager;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class FilterByWeaponType implements Command {
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
-        String value = args[0];
-        try {
-            Weapon weapon = Weapon.valueOf(value);
-        } catch (Exception e) {
-            throw new CommandExecutionFailed("No such weapon type. Try again.");
+        Weapon weapon;
+        while (true) {
+            System.out.println("Enter weapon type:");
+            System.out.print("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".\n");
+            String value = UserInputManager.getUserInputScanner().nextLine();
+            try {
+                weapon = Weapon.valueOf(value);
+                break;
+            } catch (Exception e) {
+                System.out.println("Invalid emun constant. Try again.");
+            }
         }
         for (Map.Entry<Integer, SpaceMarine> x : spaceMarineManager.spaceMarineList.entrySet()) {
-            if (x.getValue().getWeaponType() == Weapon.valueOf(value)) {
+            if (x.getValue().getWeaponType() == weapon) {
                 System.out.println(x);
             }
         }

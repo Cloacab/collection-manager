@@ -7,6 +7,7 @@ import java.util.*;
 
 public class SpaceMarineManager {
     private static SpaceMarineManager instance = null;
+    private static LocalDate initializationDate = null;
     private static final String header = "key,id,name,coordinates_x,coordinates_y,creationDate,health,category,weaponType,meleeWeapon,chapter_name,chapter_world\n";
 
     public LinkedHashMap<Integer, SpaceMarine> spaceMarineList = new LinkedHashMap<>();
@@ -16,10 +17,17 @@ public class SpaceMarineManager {
     }
 
     public static SpaceMarineManager getInstance() {
+        if (initializationDate == null) {
+            initializationDate = LocalDate.now();
+        }
         if (instance == null) {
             instance = new SpaceMarineManager();
         }
         return instance;
+    }
+
+    public static LocalDate getInitializationDate() {
+        return initializationDate;
     }
 
     public void readFromCsv(String fileName) {
