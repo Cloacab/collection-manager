@@ -1,13 +1,6 @@
-import controller.CommandExecutionFailed;
-import controller.commands.Command;
-import controller.commands.Show;
-import model.MeleeWeapon;
-import model.SpaceMarine;
 import model.SpaceMarineManager;
 import view.UserInputManager;
-
-import java.io.File;
-import java.util.Arrays;
+import au.com.bytecode.opencsv.CSVReader;
 
 public class Main {
     public static void main(String[] args) {

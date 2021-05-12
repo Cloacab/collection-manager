@@ -21,6 +21,7 @@ public class UserInputManager {
     private static final String INVALID_HEALTH = "Field must be more than 0";
 
     public UserInputManager () {
+
     }
 
     public static Scanner getUserInputScanner() {
@@ -36,26 +37,42 @@ public class UserInputManager {
     }
 
     public static void startListening() {
-        if(!fromScript) {System.out.println("Enter command or type 'help' for list of all commands.");}
+        System.out.println("===Start listening user input===");
         while (true) {
+            if (!fromScript) System.out.println("Enter command or type 'help' for list of all commands.");
             String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
                 Command command = CommandManager.valueOf(userCommand.toUpperCase(Locale.ROOT)).getCommand();
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
-                if(!fromScript) {System.out.println("Command was not found, try again.");}
+                if(!fromScript) System.out.println("Command was not found, try again.");
             } catch (CommandExecutionFailed e) {
                 if(!fromScript) {
                     System.out.println(e.getMessage());
                     System.out.println("Command cannot be executed, check arguments and try again.");
                 }
             }
-            if (!userInputScanner.hasNext() && fromScript) {
+            if (!userInputScanner.hasNextLine() && fromScript) {
                 System.out.println("Script file ended.");
                 userInputScanner = new Scanner(System.in);
+                setFromScript(false);
+                break;
             }
+            System.out.println("Command execution ended.");
         }
+    }
+
+    private static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
      public static SpaceMarine readObject() {
@@ -89,7 +106,7 @@ public class UserInputManager {
              while (true) {
                  System.out.print("Enter space marine's x coordinate:\n\t->");
                  userInput = userInputScanner.nextLine();
-                 if (userInput.isEmpty()) {
+                 if (userInput.isEmpty() || !isNumeric(userInput)) {
                      System.out.println("Invalid value for this field. Field must not be empty. Try again.");
                      continue;
                  }
@@ -104,7 +121,7 @@ public class UserInputManager {
              while (true) {
                  System.out.print("Enter space marine's y coordinate:\n\t->");
                  userInput = userInputScanner.nextLine();
-                 if (userInput.isEmpty()) {
+                 if (userInput.isEmpty() || !isNumeric(userInput)) {
                      System.out.println("Invalid value for this field. Field must not be empty. Try again.");
                  } else {
                      y = Float.parseFloat(userInput);
@@ -116,7 +133,7 @@ public class UserInputManager {
              while (true) {
                  System.out.print("Enter space marine's health:\n\t->");
                  userInput = userInputScanner.nextLine();
-                 if (userInput.isEmpty()) {
+                 if (userInput.isEmpty() || !isNumeric(userInput)) {
                      System.out.println("Invalid value for this field. Field must not be empty. Try again.");
                      continue;
                  }
@@ -131,14 +148,14 @@ public class UserInputManager {
              while (true) {
                  System.out.println("Enter space marine's category:");
                  System.out.println("Possible variants: " + Arrays.toString(AstartesCategory.class.getEnumConstants()) + ".");
-                 System.out.print("->");
+                 System.out.print("\t->");
                  userInput = userInputScanner.nextLine();
                  if (userInput.isEmpty()) {
                      category = null;
                      break;
                  } else {
                      try {
-                         category = AstartesCategory.valueOf(userInput);
+                         category = AstartesCategory.valueOf(userInput.trim().toUpperCase(Locale.ROOT));
                          break;
                      } catch (Exception e) {
                          System.out.println("Cannot resolve enum constant. Try again.");
@@ -150,13 +167,13 @@ public class UserInputManager {
              while (true) {
                  System.out.println("Enter space marine's weapon:");
                  System.out.println("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".");
-                 System.out.print("->");
+                 System.out.print("\t->");
                  userInput = userInputScanner.nextLine();
                  if (userInput.isEmpty()) {
                      System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
                  } else {
                      try {
-                         weaponType = Weapon.valueOf(userInput);
+                         weaponType = Weapon.valueOf(userInput.trim().toUpperCase(Locale.ROOT));
                          break;
                      } catch (Exception e) {
                          System.out.println("Cannot resolve enum constant. Try again.");
@@ -168,14 +185,14 @@ public class UserInputManager {
              while (true) {
                  System.out.println("Enter space marine's melee weapon:");
                  System.out.println("Possible variants: " + Arrays.toString(MeleeWeapon.class.getEnumConstants()) + ".");
-                 System.out.print("->");
+                 System.out.print("\t->");
                  userInput = userInputScanner.nextLine();
                  if (userInput.isEmpty()) {
                      meleeWeapon = null;
                      break;
                  } else {
                      try {
-                         meleeWeapon = MeleeWeapon.valueOf(userInput);
+                         meleeWeapon = MeleeWeapon.valueOf(userInput.trim().toUpperCase(Locale.ROOT));
                          break;
                      } catch (Exception e) {
                          System.out.println("Cannot resolve enum constant. Try again.");

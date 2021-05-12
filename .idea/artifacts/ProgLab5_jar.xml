@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ProgLab5:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ProgLab5_jar</output-path>
+    <root id="archive" name="ProgLab5.jar">
+      <element id="module-output" name="ProgLab5" />
+    </root>
+  </artifact>
+</component>

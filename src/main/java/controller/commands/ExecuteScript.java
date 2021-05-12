@@ -15,10 +15,9 @@ public class ExecuteScript implements Command{
             Scanner userInputScanner = UserInputManager.getUserInputScanner();
             UserInputManager.setUserInputScanner(scriptScanner);
             UserInputManager.setFromScript(true);
-            System.out.println("Starting to read script file.");
+            System.out.println("===Starting to read script file===");
             UserInputManager.startListening();
-            UserInputManager.setFromScript(false);
-            UserInputManager.setUserInputScanner(userInputScanner);
+            System.out.println("===Script file ended===");
         } catch (FileNotFoundException e) {
             throw new CommandExecutionFailed("Script file was not found. Try again.");
         }

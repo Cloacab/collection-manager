@@ -2,3 +2,5 @@ target/
 .classpath
 .project
 .settings/
+lab05.jar
+out/
