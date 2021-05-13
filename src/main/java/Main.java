@@ -1,12 +1,14 @@
 import model.SpaceMarineManager;
 import view.UserInputManager;
-import au.com.bytecode.opencsv.CSVReader;
+
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
-        spaceMarineManager.readFromCsv(args[0]);
+        SpaceMarineManager.setFileName(args[0]);
+        spaceMarineManager.readFromCsv();
         UserInputManager.startListening();
 
     }

@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class UserInputManager {
     private static Scanner userInputScanner = new Scanner(System.in);
-    private Scanner scriptInputScanner;
     private static boolean fromScript = false;
 
     private static final String INVALID_VALUE = "Invalid value for this field.";
@@ -38,28 +37,28 @@ public class UserInputManager {
 
     public static void startListening() {
         System.out.println("===Start listening user input===");
+        if (!fromScript) System.out.println("Enter command or type 'help' for list of all commands.");
         while (true) {
-            if (!fromScript) System.out.println("Enter command or type 'help' for list of all commands.");
             String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
                 Command command = CommandManager.valueOf(userCommand.toUpperCase(Locale.ROOT)).getCommand();
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
+                setFromScript(false);
                 if(!fromScript) System.out.println("Command was not found, try again.");
             } catch (CommandExecutionFailed e) {
+                setFromScript(false);
                 if(!fromScript) {
                     System.out.println(e.getMessage());
                     System.out.println("Command cannot be executed, check arguments and try again.");
                 }
             }
             if (!userInputScanner.hasNextLine() && fromScript) {
-                System.out.println("Script file ended.");
                 userInputScanner = new Scanner(System.in);
                 setFromScript(false);
                 break;
             }
-            System.out.println("Command execution ended.");
         }
     }
 
