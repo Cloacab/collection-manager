@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ProgLab5_jar</output-path>
     <root id="archive" name="ProgLab5.jar">
       <element id="module-output" name="ProgLab5" />
+      <element id="library" level="project" name="Maven: net.sf.opencsv:opencsv:2.3" />
     </root>
   </artifact>
 </component>
