@@ -42,7 +42,7 @@ public class UserInputManager {
             String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
-                Command command = CommandManager.valueOf(userCommand.toUpperCase(Locale.ROOT)).getCommand();
+                Command command = CommandManager.valueOf(userCommand.trim().toUpperCase(Locale.ROOT)).getCommand();
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
                 setFromScript(false);

@@ -101,6 +101,9 @@ public class SpaceMarineManager {
             System.out.println("Unable to read file.");
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Something wrong with file. Check data and try again.");
+            System.exit(1);
         }
     }
 
