@@ -7,7 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class RemoveGreaterKey implements Command{
+public class RemoveGreaterKey extends CommandImpl{
+    private static final String description = "remove_greater_key null : удалить из коллекции все элементы, ключ которых превышает заданный";
+    private static final String name = "remove_greater_key";
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         Integer key = Integer.parseInt(args[1]);

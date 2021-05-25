@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PrintFieldDescendingMeleeWeapon implements Command{
+public class PrintFieldDescendingMeleeWeapon extends CommandImpl{
+    private static final String description = "print_field_descending_melee_weapon : вывести значения поля meleeWeapon всех элементов в порядке убывания";
+    private static final String name = "print_field_descending_melee_weapon";
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         spaceMarineManager.spaceMarineList.entrySet().stream()

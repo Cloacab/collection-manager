@@ -6,7 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class RemoveLowerKey implements Command{
+public class RemoveLowerKey extends CommandImpl{
+    private static final String description = "remove_lower_key null : удалить из коллекции все элементы, ключ которых меньше, чем заданный";
+    private static final String name = "remove_lower_key";
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         Integer key = Integer.parseInt(args[1]);

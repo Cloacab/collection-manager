@@ -35,6 +35,7 @@ public class UserInputManager {
         UserInputManager.fromScript = fromScript;
     }
 
+    //TODO: Refactor command input
     public static void startListening() {
         System.out.println("===Start listening user input===");
         if (!fromScript) System.out.println("Enter command or type 'help' for list of all commands.");

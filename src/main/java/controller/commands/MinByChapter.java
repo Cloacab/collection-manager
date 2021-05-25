@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class MinByChapter implements Command{
+public class MinByChapter extends CommandImpl{
+    private static final String description = "min_by_chapter : вывести любой объект из коллекции, значение поля chapter которого является минимальным";
+    private static final String name = "min_by_chapter";
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         Optional<Map.Entry<Integer, SpaceMarine>> minS = spaceMarineManager.spaceMarineList.entrySet().stream()
