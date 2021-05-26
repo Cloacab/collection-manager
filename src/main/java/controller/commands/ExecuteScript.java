@@ -8,8 +8,12 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class ExecuteScript extends CommandImpl{
-    private static final String description = "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.";
-    private static final String name = "execute_script";
+
+    public ExecuteScript() {
+        name = "execute_script";
+        description = "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.";
+    }
+
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         File file = new File(args[1]);

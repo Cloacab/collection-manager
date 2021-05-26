@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class UserInputManager {
     private static Scanner userInputScanner = new Scanner(System.in);
     private static boolean fromScript = false;
+    private static final CommandManager commandManager = CommandManager.getInstance();
 
     private static final String INVALID_VALUE = "Invalid value for this field.";
     private static final String TRY_AGAIN_MESSAGE = "Try again.";
@@ -43,7 +44,7 @@ public class UserInputManager {
             String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
-                Command command = CommandManager.valueOf(userCommand.trim().toUpperCase(Locale.ROOT)).getCommand();
+                Command command = commandManager.getAvailableCommands().get(userCommand.trim().toLowerCase(Locale.ROOT));
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
                 setFromScript(false);

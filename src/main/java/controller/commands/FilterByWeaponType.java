@@ -10,8 +10,12 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class FilterByWeaponType extends CommandImpl {
-    private static final String description = "filter_by_weapon_type weaponType : вывести элементы, значение поля weaponType которых равно заданному";
-    private static final String name = "filter_by_weapon_type";
+
+    public FilterByWeaponType() {
+        description = "filter_by_weapon_type weaponType : вывести элементы, значение поля weaponType которых равно заданному";
+        name = "filter_by_weapon_type";
+    }
+
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         Weapon weapon;

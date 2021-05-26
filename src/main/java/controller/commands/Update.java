@@ -8,8 +8,12 @@ import view.UserInputManager;
 import java.util.Map;
 
 public class Update extends CommandImpl{
-    private static final String description = "update id {element} : обновить значение элемента коллекции, id которого равен заданному";
-    private static final String name = "update";
+
+    public Update() {
+        description = "update id {element} : обновить значение элемента коллекции, id которого равен заданному";
+        name = "update";
+    }
+
     @Override
     public void execute(String[] args) throws CommandExecutionFailed {
         int id = Integer.parseInt(args[1]);
