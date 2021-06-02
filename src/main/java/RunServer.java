@@ -1,9 +1,14 @@
 import server.Server;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 public class RunServer {
     public static void main(String[] args) {
-        new Server().start();
+        try {
+            new Server().run();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 }

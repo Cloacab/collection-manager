@@ -8,10 +8,9 @@ import java.util.HashMap;
 
 public class Packet implements Serializable {
     private Command command = null;
-    private HashMap<Integer,SpaceMarine> objects = null;
+    private final HashMap<Integer,SpaceMarine> objects = new HashMap<>();
     private String argument = null;
     private String message = null;
-    private int clientPort;
 
     public Command getCommand() {
         return command;
@@ -27,10 +26,6 @@ public class Packet implements Serializable {
 
     public String getMessage() {
         return message;
-    }
-
-    public int getClientPort() {
-        return clientPort;
     }
 
     private Packet() {
@@ -66,11 +61,6 @@ public class Packet implements Serializable {
             return this;
         }
 
-        public Builder setClientPort(int port) {
-            Packet.this.clientPort = port;
-            return this;
-        }
-
         public Packet build() {
             return Packet.this;
         }
@@ -81,10 +71,9 @@ public class Packet implements Serializable {
     public String toString() {
         return "Packet{" +
                 "\n\tcommand=" + command +
-                "\n\t, objects=" + objects +
-                "\n\t, argument='" + argument + '\'' +
-                "\n\t, message='" + message + '\'' +
-                "\n\t, clientPort=" + clientPort +
+                ",\n\t objects=" + objects +
+                ",\n\t argument='" + argument + '\'' +
+                ",\n\t message='" + message + '\'' +
                 "\n}";
     }
 }

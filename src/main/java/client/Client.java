@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Client {
@@ -27,33 +28,12 @@ public class Client {
 
     public void run() throws IOException{
         try{
-            // Создайте соответствующие буферы
-
-
-          /* Преобразуйте данные в байты
-           и разместите в буферах */
-            SpaceMarine spaceMarine = new SpaceMarine();
-            ByteBuffer serialized = ObjectSerializer.serialize(spaceMarine);
-            sendingDataBuffer.put(serialized);
-
-            // Создайте UDP-пакет
-            DatagramPacket sendingPacket = new DatagramPacket(
-                    sendingDataBuffer.array(), sendingDataBuffer.capacity(),
-                    IPAddress, SERVICE_PORT
-            );
-
-            // Отправьте UDP-пакет серверу
-            clientSocket.send(sendingPacket);
-
-            // Получите ответ от сервера, т.е. предложение из заглавных букв
-            DatagramPacket receivingPacket = new DatagramPacket(
-                    receivingDataBuffer.array(),receivingDataBuffer.capacity()
-            );
-            clientSocket.receive(receivingPacket);
-
-            // Выведите на экране полученные данные
-            System.out.println("Sent from the server: " + ObjectSerializer.deserialize(ByteBuffer.wrap(receivingPacket.getData())));
-
+            handshake();
+            System.out.println(availableCommands);
+            Packet packet = receiveOne();
+            int n = Integer.parseInt(packet.getArgument());
+            packet = receiveLong();
+            System.out.println(packet);
             // Закройте соединение с сервером через сокет
             clientSocket.close();
         }
@@ -67,7 +47,6 @@ public class Client {
         receivingDataBuffer.clear();
         Packet packet = Packet.getBuilder()
                 .setMessage("handshake")
-                .setClientPort(clientSocket.getPort())
                 .build();
 
         sendingDataBuffer.put(ObjectSerializer.serialize(packet));
@@ -96,7 +75,6 @@ public class Client {
     private Packet receiveOne() throws IOException, ClassNotFoundException {
 
         clearBuffers();
-
         DatagramPacket receivingPacket = new DatagramPacket(
                 receivingDataBuffer.array(),
                 receivingDataBuffer.capacity());
@@ -126,11 +104,24 @@ public class Client {
         clearBuffers();
         ArrayList<Byte> byteArray = new ArrayList<Byte>();
         Packet packet = receiveOne();
-        DatagramPacket receivingPacket = new DatagramPacket(
-                receivingDataBuffer.array(),
-                receivingDataBuffer.capacity());
-        clientSocket.receive(receivingPacket);
-
+        int n = Integer.parseInt(packet.getArgument());
+        for (int i = 0; i < n; i++) {
+            clearBuffers();
+            DatagramPacket receivingPacket = new DatagramPacket(
+                    receivingDataBuffer.array(),
+                    receivingDataBuffer.capacity());
+            clientSocket.receive(receivingPacket);
+            for (Byte b :
+                    receivingPacket.getData()) {
+                byteArray.add(b);
+            }
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.size());
+        for (Byte b :
+                byteArray) {
+        byteBuffer.put(b);
+        }
+        return (Packet) ObjectSerializer.deserialize(byteBuffer);
     }
 
     private ArrayList<Packet> receive() throws IOException, ClassNotFoundException {
