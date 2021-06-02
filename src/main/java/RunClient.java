@@ -5,7 +5,7 @@ import java.io.IOException;
 public class RunClient {
     public static void main(String[] args) {
         try {
-            Client.run();
+            new Client().run();
         } catch (IOException e) {
             e.printStackTrace();
         }

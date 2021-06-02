@@ -15,18 +15,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
-        SpaceMarineManager.setFileName("SpaceMarineList.csv");
+        SpaceMarineManager.setFileName(args.length > 0 ? args[0] : "SpaceMarineList.csv");
         spaceMarineManager.readFromCsv();
         UserInputManager.startListening();
 
-//        CommandManager commandManager = CommandManager.getInstance();
-//        System.out.println(commandManager.getAvailableCommands().toString());
-//
-//        try {
-//            commandManager.getAvailableCommands().get("info").execute(new String[] {});
-//        } catch (CommandExecutionFailed commandExecutionFailed) {
-//            commandExecutionFailed.printStackTrace();
-//        }
     }
 
 }

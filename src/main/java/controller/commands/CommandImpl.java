@@ -2,10 +2,14 @@ package controller.commands;
 
 import model.SpaceMarineManager;
 
-public abstract class CommandImpl implements Command {
+import java.io.Serializable;
 
-    protected SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
+public abstract class CommandImpl implements Command, Serializable {
+
+    private static final long serialVersionUID = 1L;
+    protected transient SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
     protected String name;
+    protected String description;
 
     public String getName() {
         return name;
@@ -15,5 +19,4 @@ public abstract class CommandImpl implements Command {
         return description;
     }
 
-    protected String description;
 }

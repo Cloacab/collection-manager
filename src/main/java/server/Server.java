@@ -1,24 +1,39 @@
 package server;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import controller.CommandManager;
+import controller.commands.Command;
+import dto.ObjectSerializer;
+import model.SpaceMarine;
+import model.SpaceMarineManager;
 
-public class Server{
+import java.io.IOException;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.TreeMap;
+
+public class Server extends Thread {
     // Серверный UDP-сокет запущен на этом порту
     public final static int SERVICE_PORT=50001;
+    private final static int BUFFER_SIZE = 1024 * 4;
+    private SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
+    private CommandManager commandManager = CommandManager.getInstance();
 
-    public static void run() throws IOException{
+    @Override
+    public void run(){
+
+
+
         try{
             // Создайте новый экземпляр DatagramSocket, чтобы получать ответы от клиента
             DatagramSocket serverSocket = new DatagramSocket(SERVICE_PORT);
 
       /* Создайте буферы для хранения отправляемых и получаемых данных.
 Они временно хранят данные в случае задержек связи */
-            byte[] receivingDataBuffer = new byte[1024];
-            byte[] sendingDataBuffer = new byte[1024];
+            byte[] receivingDataBuffer = new byte[BUFFER_SIZE];
+            byte[] sendingDataBuffer = new byte[BUFFER_SIZE];
 
             /* Создайте экземпляр UDP-пакета для хранения клиентских данных с использованием буфера для полученных данных */
             DatagramPacket inputPacket = new DatagramPacket(receivingDataBuffer, receivingDataBuffer.length);
@@ -28,14 +43,23 @@ public class Server{
             serverSocket.receive(inputPacket);
 
             // Выведите на экран отправленные клиентом данные
-            String receivedData = new String(inputPacket.getData());
-            System.out.println("Sent from the client: " + receivedData);
+            ByteBuffer serializedData = ByteBuffer.wrap(inputPacket.getData());
+            try {
+                SpaceMarine spaceMarine = ObjectSerializer.deserialize(serializedData);
+                System.out.println("Received from client: \n" + spaceMarine);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Arrays.toString(new SocketAddress[]{inputPacket.getSocketAddress()}));
 
             /*
              * Преобразуйте отправленные клиентом данные в верхний регистр,
              * Преобразуйте их в байты
              * и сохраните в соответствующий буфер. */
-            sendingDataBuffer = receivedData.toUpperCase().getBytes();
+
+            HashMap<String, Command> availableCommands = CommandManager.getInstance().getAvailableCommands();
+            ByteBuffer serializedCommands = ObjectSerializer.serialize(availableCommands);
+            System.out.println(serializedCommands.toString());
 
             // Получите IP-адрес и порт клиента
             InetAddress senderAddress = inputPacket.getAddress();
@@ -43,7 +67,7 @@ public class Server{
 
             // Создайте новый UDP-пакет с данными, чтобы отправить их клиенту
             DatagramPacket outputPacket = new DatagramPacket(
-                    sendingDataBuffer, sendingDataBuffer.length,
+                    serializedCommands.array(), serializedCommands.capacity(),
                     senderAddress,senderPort
             );
 
@@ -51,8 +75,7 @@ public class Server{
             serverSocket.send(outputPacket);
             // Закройте соединение сокетов
             serverSocket.close();
-        }
-        catch (SocketException e){
+        } catch (IOException e){
             e.printStackTrace();
         }
     }

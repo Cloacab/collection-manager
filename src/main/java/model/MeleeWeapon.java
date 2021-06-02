@@ -1,6 +1,8 @@
 package model;
 
-public enum MeleeWeapon {
+import java.io.Serializable;
+
+public enum MeleeWeapon implements Serializable {
     CHAIN_SWORD(0),
     POWER_SWORD(1),
     MANREAPER(2),

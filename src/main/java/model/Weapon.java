@@ -1,6 +1,8 @@
 package model;
 
-public enum Weapon {
+import java.io.Serializable;
+
+public enum Weapon implements Serializable {
     BOLT_RIFLE,
     COMBI_PLASMA_GUN,
     GRENADE_LAUNCHER,

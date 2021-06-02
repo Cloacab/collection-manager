@@ -1,6 +1,8 @@
 package model;
 
-public enum AstartesCategory {
+import java.io.Serializable;
+
+public enum AstartesCategory implements Serializable {
     SCOUT(0),
     TACTICAL(1),
     TERMINATOR(2),

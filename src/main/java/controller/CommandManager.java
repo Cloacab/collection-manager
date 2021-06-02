@@ -6,13 +6,11 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 public class CommandManager {
 
-    private final Map<String, Command> availableCommands = new HashMap<>();
+    private final HashMap<String, Command> availableCommands = new HashMap<>();
 
     private final String commandsDescription;
 
@@ -42,7 +40,7 @@ public class CommandManager {
         return instance;
     }
 
-    public Map<String, Command> getAvailableCommands() {
+    public HashMap<String, Command> getAvailableCommands() {
         return availableCommands;
     }
 
