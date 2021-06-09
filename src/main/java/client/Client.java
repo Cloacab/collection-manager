@@ -1,14 +1,14 @@
 package client;
 
 import controller.commands.Command;
-import dto.ObjectSerializer;
-import dto.Packet;
+import dto.*;
 import model.SpaceMarine;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -20,6 +20,7 @@ public class Client {
     private final InetAddress IPAddress;
     private final ByteBuffer sendingDataBuffer = ByteBuffer.allocate(BUFFER_SIZE);
     private final ByteBuffer receivingDataBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+    private final DTOFactory dtoFactory = DTOFactory.getInstance();
 
     public Client() throws SocketException, UnknownHostException {
         clientSocket = new DatagramSocket();
@@ -30,14 +31,14 @@ public class Client {
         try{
             handshake();
             System.out.println(availableCommands);
-            Packet packet = receiveOne();
-            int n = Integer.parseInt(packet.getArgument());
+            DullPacket packet = receive();
+            int n = Integer.parseInt(packet.getData());
             packet = receiveLong();
             System.out.println(packet);
             // Закройте соединение с сервером через сокет
             clientSocket.close();
         }
-        catch(SocketException | ClassNotFoundException e) {
+        catch(SocketException e) {
             e.printStackTrace();
         }
     }
@@ -72,76 +73,82 @@ public class Client {
         }
     }
 
-    private Packet receiveOne() throws IOException, ClassNotFoundException {
-
+    private DullPacket receive() throws IOException {
         clearBuffers();
         DatagramPacket receivingPacket = new DatagramPacket(
                 receivingDataBuffer.array(),
                 receivingDataBuffer.capacity());
         clientSocket.receive(receivingPacket);
-
-        clearBuffers();
-
-        return ObjectSerializer.deserialize(ByteBuffer.wrap(receivingPacket.getData()));
+        try {
+            return ObjectSerializer.deserialize(ByteBuffer.wrap(receivingPacket.getData()));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            return null;
+        }
     }
 
-    private ArrayList<Packet> receiveMultiple() throws IOException, ClassNotFoundException {
-
-        ArrayList<Packet> packets = new ArrayList<>();
-
-        Packet packet = receiveOne();
-        packets.add(packet);
-        long start = System.currentTimeMillis();
-        while (!packet.getMessage().equals("end") || System.currentTimeMillis() - start > 500) {
-            packet = receiveOne();
-            packets.add(packet);
-            start = System.currentTimeMillis();
-        }
-        return packets;
+    private DullPacket receiveLong() {
+        clearBuffers();
+        DatagramPacket receivingPacket = new DatagramPacket(
+                receivingDataBuffer.array(),
+                receivingDataBuffer.capacity());
+        return null;
     }
 
-    private Packet receiveLong() throws IOException, ClassNotFoundException {
+    /**
+     * Sends serialized data to server
+     * @param data serialized data to transfer to server
+     * @param packets number of packets to split data to
+     */
+    private void send(ByteBuffer data, int packets) throws IOException {
         clearBuffers();
-        ArrayList<Byte> byteArray = new ArrayList<Byte>();
-        Packet packet = receiveOne();
-        int n = Integer.parseInt(packet.getArgument());
-        for (int i = 0; i < n; i++) {
-            clearBuffers();
-            DatagramPacket receivingPacket = new DatagramPacket(
-                    receivingDataBuffer.array(),
-                    receivingDataBuffer.capacity());
-            clientSocket.receive(receivingPacket);
-            for (Byte b :
-                    receivingPacket.getData()) {
-                byteArray.add(b);
-            }
+        for (int i = 0; i < packets; i++) {
+            byte[] piece = new byte[BUFFER_SIZE];
+            data.get(piece, 0, BUFFER_SIZE);
+            sendPacket(piece);
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocate(byteArray.size());
-        for (Byte b :
-                byteArray) {
-        byteBuffer.put(b);
-        }
-        return (Packet) ObjectSerializer.deserialize(byteBuffer);
+        sendEnd();
     }
 
-    private ArrayList<Packet> receive() throws IOException, ClassNotFoundException {
-        clearBuffers();
-        Packet packet = receiveOne();
-        switch (packet.getMessage()){
-            case "begin": {
-                return receiveMultiple();
-            }
-            case "long": {
-                ArrayList<Packet> packets = new ArrayList<>();
-                packets.add(receiveLong());
-                return packets;
-            }
-            default: {
-                ArrayList<Packet> packets = new ArrayList<>();
-                packets.add(packet);
-                return packets;
-            }
-        }
+    /**
+     * Sends terminating command that ends packet receiving on server
+     */
+    private void sendEnd() throws IOException {
+        DTO<String> end = this.dtoFactory.getDTO();
+        end.setData("end");
+        ByteBuffer serialize = ObjectSerializer.serialize(end);
+        sendPacket(serialize.array());
+    }
+
+    /**
+     * Sends already prepared piece of packet
+     * @param piece serialized piece of packet
+     */
+    private void sendPacket(byte[] piece) throws IOException {
+        DatagramPacket sendingPacket = new DatagramPacket(
+                piece, piece.length,
+                IPAddress, SERVICE_PORT
+        );
+        clientSocket.send(sendingPacket);
+    }
+
+    /**
+     *
+     * @param dto containerised data to send to server
+     * @return serialized data
+     */
+    private ByteBuffer prepareDTO(DTO<?> dto) {
+        return ObjectSerializer.serialize(dto);
+    }
+
+    /**
+     *
+     * @param data array of serialized data
+     * @return number of packages to split data to
+     */
+    private int countPackets(ByteBuffer data) {
+        return (data.capacity() + BUFFER_SIZE - 1) / BUFFER_SIZE;
     }
 
     private void clearBuffers() {
@@ -149,4 +156,13 @@ public class Client {
         receivingDataBuffer.clear();
     }
 
+    public void send(DTO<SpaceMarine> dto) throws IOException {
+        ByteBuffer preparedData = prepareDTO(dto);
+        int packets = countPackets(preparedData);
+        send(preparedData, packets);
+    }
+
+    public DTO<?> recieve() {
+        return null;
+    }
 }

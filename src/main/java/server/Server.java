@@ -2,6 +2,7 @@ package server;
 
 import controller.CommandManager;
 import controller.commands.Command;
+import dto.DTO;
 import dto.ObjectSerializer;
 import dto.Packet;
 import model.SpaceMarine;
@@ -142,5 +143,13 @@ public class Server{
     private void clearBuffers() {
         sendingDataBuffer.clear();
         receivingDataBuffer.clear();
+    }
+
+    public void send(DTO<?> dto1) {
+
+    }
+
+    public DTO<?> recieve() {
+        return null;
     }
 }
