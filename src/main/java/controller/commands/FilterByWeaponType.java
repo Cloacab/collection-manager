@@ -1,13 +1,13 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
+import dto.DTO;
 import model.SpaceMarine;
 import model.Weapon;
 import view.UserInputManager;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class FilterByWeaponType extends CommandImpl {
 
@@ -17,9 +17,15 @@ public class FilterByWeaponType extends CommandImpl {
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
+        String[] localArgs = args.length == 0 ? this.args : args;
         Weapon weapon;
         while (true) {
+            if ((localArgs.length == 2)) {
+                weapon = Weapon.valueOf(localArgs[1]);
+                break;
+            }
+//            TODO: rewrite logic
             System.out.println("Enter weapon type:");
             System.out.print("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".\n");
             String value = UserInputManager.getUserInputScanner().nextLine();
@@ -35,5 +41,6 @@ public class FilterByWeaponType extends CommandImpl {
                 System.out.println(x);
             }
         }
+        return null;
     }
 }

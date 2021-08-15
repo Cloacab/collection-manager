@@ -6,13 +6,24 @@ import controller.commands.Command;
 import model.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class UserInputManager {
-    private static Scanner userInputScanner = new Scanner(System.in);
-    private static boolean fromScript = false;
-    private static final CommandManager commandManager = CommandManager.getInstance();
+    protected static Scanner userInputScanner = new Scanner(System.in);
+    protected static boolean fromScript = false;
+    protected static final CommandManager commandManager = CommandManager.getInstance();
+
+    public static HashMap<String, Command> getAvailableCommands() {
+        return availableCommands;
+    }
+
+    public static void setAvailableCommands(HashMap<String, Command> availableCommands) {
+        UserInputManager.availableCommands = availableCommands;
+    }
+
+    private static HashMap<String, Command> availableCommands;
 
     private static final String INVALID_VALUE = "Invalid value for this field.";
     private static final String TRY_AGAIN_MESSAGE = "Try again.";
@@ -21,7 +32,7 @@ public class UserInputManager {
     private static final String INVALID_HEALTH = "Field must be more than 0";
 
     public UserInputManager () {
-
+        availableCommands = commandManager.getAvailableCommands();
     }
 
     public static Scanner getUserInputScanner() {
@@ -44,7 +55,7 @@ public class UserInputManager {
             String userInput = userInputScanner.nextLine();
             String userCommand = userInput.split(" ")[0];
             try {
-                Command command = commandManager.getAvailableCommands().get(userCommand.trim().toLowerCase(Locale.ROOT));
+                Command command = availableCommands.get(userCommand.trim().toLowerCase(Locale.ROOT));
                 command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
             } catch (IllegalArgumentException e) {
                 setFromScript(false);

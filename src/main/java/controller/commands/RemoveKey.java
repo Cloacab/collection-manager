@@ -1,10 +1,7 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import dto.DTO;
 
 public class RemoveKey extends CommandImpl{
 
@@ -14,8 +11,9 @@ public class RemoveKey extends CommandImpl{
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
         Integer key = Integer.parseInt(args[1]);
         spaceMarineManager.spaceMarineList.remove(key);
+        return null;
     }
 }

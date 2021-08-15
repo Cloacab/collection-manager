@@ -1,5 +1,4 @@
 import client.Client;
-import com.apple.eawt.event.SwipeEvent;
 import dto.DTO;
 import dto.DTOFactory;
 import model.SpaceMarine;
@@ -8,13 +7,11 @@ import org.junit.jupiter.api.Test;
 import server.Server;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class TestClientSide {
 
     @Test
-    public void shouldDoSmth() throws IOException {
+    public void shouldDoSmth() throws IOException, ClassNotFoundException {
 //        given
         DTOFactory dtoFactory = DTOFactory.getInstance();
         DTO<SpaceMarine> dto = dtoFactory.getDTO();
@@ -22,10 +19,10 @@ public class TestClientSide {
         Server server = new Server();
         Client client = new Client();
 //        when
-        client.send(dto);
-        DTO<?> dto1 =  server.recieve();
-        server.send(dto1);
-        DTO<?> dto2 = client.recieve();
+        client.getConnection().send(dto);
+        DTO<?> dto1 =  server.getConnection().receive();
+        server.getConnection().send(dto1);
+        DTO<?> dto2 = client.getConnection().receive();
 //        then
         Assertions.assertEquals(dto2, dto);
     }

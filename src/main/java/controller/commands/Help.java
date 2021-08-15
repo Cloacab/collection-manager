@@ -2,8 +2,7 @@ package controller.commands;
 
 import controller.CommandExecutionFailed;
 import controller.CommandManager;
-
-import java.util.Arrays;
+import dto.DTO;
 
 public class Help extends CommandImpl {
 
@@ -13,7 +12,9 @@ public class Help extends CommandImpl {
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
+        String[] localArgs = args.length == 0 ? this.args : args;
         System.out.println(CommandManager.getInstance().getCommandsDescription());
+        return null;
     }
 }

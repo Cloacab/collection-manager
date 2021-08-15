@@ -1,6 +1,7 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
+import dto.DTO;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class RemoveLowerKey extends CommandImpl{
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
         Integer key = Integer.parseInt(args[1]);
         spaceMarineManager.spaceMarineList = spaceMarineManager.spaceMarineList.entrySet().stream()
                 .filter(a -> a.getKey() >= key)
@@ -24,5 +25,6 @@ public class RemoveLowerKey extends CommandImpl{
                         (e1, e2) -> e1,
                         LinkedHashMap::new
                 ));
+        return null;
     }
 }

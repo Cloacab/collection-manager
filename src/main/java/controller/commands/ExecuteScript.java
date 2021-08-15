@@ -1,6 +1,7 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
+import dto.DTO;
 import view.UserInputManager;
 
 import java.io.File;
@@ -15,8 +16,9 @@ public class ExecuteScript extends CommandImpl{
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
-        File file = new File(args[1]);
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
+        String[] localArgs = args.length == 0 ? this.args : args;
+        File file = new File(localArgs[1]);
         try(Scanner scriptScanner = new Scanner(file)) {
             Scanner userInputScanner = UserInputManager.getUserInputScanner();
             UserInputManager.setUserInputScanner(scriptScanner);
@@ -27,5 +29,6 @@ public class ExecuteScript extends CommandImpl{
         } catch (FileNotFoundException e) {
             throw new CommandExecutionFailed("Script file was not found. Try again.");
         }
+        return null;
     }
 }

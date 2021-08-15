@@ -10,6 +10,15 @@ public abstract class CommandImpl implements Command, Serializable {
     protected transient SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
     protected String name;
     protected String description;
+    protected String[] args = new String[0];
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
 
     public String getName() {
         return name;

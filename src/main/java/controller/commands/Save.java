@@ -1,6 +1,7 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
+import dto.DTO;
 
 public class Save extends CommandImpl{
 
@@ -10,7 +11,8 @@ public class Save extends CommandImpl{
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
         spaceMarineManager.writeToScv();
+        return null;
     }
 }

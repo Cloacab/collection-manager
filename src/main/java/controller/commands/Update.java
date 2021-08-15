@@ -1,8 +1,8 @@
 package controller.commands;
 
 import controller.CommandExecutionFailed;
+import dto.DTO;
 import model.SpaceMarine;
-import model.SpaceMarineManager;
 import view.UserInputManager;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ public class Update extends CommandImpl{
     }
 
     @Override
-    public void execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
         int id = Integer.parseInt(args[1]);
         Integer key = null;
         SpaceMarine spaceMarine = null;
@@ -31,5 +31,6 @@ public class Update extends CommandImpl{
         spaceMarine = UserInputManager.readObject();
         spaceMarine.setId(id);
         spaceMarineManager.spaceMarineList.put(key, spaceMarine);
+        return null;
     }
 }

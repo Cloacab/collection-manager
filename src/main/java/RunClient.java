@@ -4,10 +4,6 @@ import java.io.IOException;
 
 public class RunClient {
     public static void main(String[] args) {
-        try {
-            new Client().run();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Client().run();
     }
 }
