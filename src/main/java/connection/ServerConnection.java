@@ -12,6 +12,7 @@ public class ServerConnection extends Connection{
         super();
         try {
             this.socket = new DatagramSocket(SERVER_PORT);
+//            this.socket.setSoTimeout(2000);
             this.IPAddress = socket.getInetAddress();
         } catch (SocketException e) {
             e.printStackTrace();

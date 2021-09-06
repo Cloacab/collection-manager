@@ -13,6 +13,7 @@ public class ClientConnection extends Connection{
         super();
         try {
             this.socket = new DatagramSocket();
+            this.socket.setSoTimeout(2000);
             this.IPAddress = InetAddress.getByName("localhost");
             this.SENDER_PORT = 50001;
             this.senderIPAddress = InetAddress.getByName("localhost");
@@ -49,6 +50,8 @@ public class ClientConnection extends Connection{
                 break;
             } catch (ConnectionTimeoutException e) {
                 System.out.println(e.getMessage());
+            } catch (SocketTimeoutException e) {
+                System.out.printf("Try to reconnect in 3 seconds, attempts rest: %d", maxConnectionsAttempts - currentConnectionsAttempts);
             } catch (Exception e) {
                 e.printStackTrace();
             }
