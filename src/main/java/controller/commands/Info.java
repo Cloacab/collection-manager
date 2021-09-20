@@ -13,7 +13,7 @@ public class Info extends CommandImpl{
 
    @Override
     public DTO<?> execute(String[] args) throws CommandExecutionFailed {
-        String[] localArgs = args.length == 0 ? this.args : args;
+        String[] localArgs = args.length == 0 ? (String[]) this.args : args;
         System.out.printf("Collection class: %s\nCreation date: %s\nElements: %d\n",
                 spaceMarineManager.spaceMarineList.getClass().getName(),
                 SpaceMarineManager.getInitializationDate(),

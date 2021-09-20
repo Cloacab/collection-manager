@@ -118,18 +118,6 @@ public abstract class Connection {
      */
     public DTO<?> receive() throws IOException, ClassNotFoundException, ConnectionTimeoutException {
 
-        Thread timeOut = new Thread(() ->{
-            try {
-                Thread.sleep(3000);
-                throw new ConnectionTimeoutException("Timeout exceeded.");
-            } catch (InterruptedException ignored) {
-//                e.printStackTrace();
-            }
-        });
-
-        timeOut.setDaemon(true);
-        timeOut.start();
-
         ArrayList<byte[]> bytes = new ArrayList<>();
         byte[] piece = receiveOne();
         DTO<Integer> deserialize = ObjectSerializer.deserialize(ByteBuffer.wrap(piece));
@@ -142,7 +130,6 @@ public abstract class Connection {
         for(byte[] bytes1 : bytes) {
             wholeMessage.put(bytes1);
         }
-        timeOut.interrupt();
         return ObjectSerializer.deserialize(wholeMessage);
     }
 

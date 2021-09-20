@@ -8,6 +8,7 @@ import dto.DTOFactory;
 import view.UserInputManager;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ public class Client {
     private HashMap<String, Class<Command>> availableCommands;
     private final DTOFactory dtoFactory = DTOFactory.getInstance();
     private final Scanner userInputScanner = new Scanner(System.in);
+    private String[] userCommandParts;
 
     public Connection getConnection() {
         return connection;
@@ -32,16 +34,17 @@ public class Client {
 
     public void run() {
         connection.connect();
-        getCommands();
         startListening();
     }
 
     public void startListening() {
+//        getCommands();
         System.out.println("===Start listening user input===");
         System.out.println("Enter command or type 'help' for list of all commands. Type 'connect' to connect to the serer.");
         while (true) {
             String userInput = userInputScanner.nextLine();
-            String userCommand = userInput.split(" ")[0];
+            userCommandParts = userInput.split(" ");
+            String userCommand = userCommandParts[0];
             if (userCommand.equals("exit")) break;
             if (userCommand.equals("save")) {
                 System.out.println("Unavailable command for user.");
@@ -50,17 +53,23 @@ public class Client {
             if (userCommand.equals("connect")) {
                 connection.connect();
                 continue;
+            } if (userCommand.equals("load")) {
+                getCommands();
             }
             try {
                 Class<Command> command = availableCommands.get(userCommand.trim().toLowerCase(Locale.ROOT));
                 DTO<Class<Command>> commandDTO = dtoFactory.getDTO();
                 commandDTO.setData(command);
                 connection.send(commandDTO);
+                connection.receive();
             } catch (IllegalArgumentException e) {
                 System.out.println("Command was not found, try again.");
             } catch (IOException e) {
-                e.printStackTrace();
                 System.out.println("Cannot send command to the server.");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                System.out.println("You haven't load command list from server, type 'load' to get available commands.");
             }
         }
     }
@@ -76,9 +85,11 @@ public class Client {
                 map.putIfAbsent(x.getKey(), (Class<Command>) x.getValue().getClass());
             }
             availableCommands = map;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (SocketTimeoutException e) {
+            System.out.println("Lost connection with server, check server or try to type 'connect'.");
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

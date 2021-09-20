@@ -7,6 +7,7 @@ public class DTO <T> implements Serializable {
 
     private T data;
     private int status;
+    private String message;
     DTO() {
 
     }
@@ -27,4 +28,11 @@ public class DTO <T> implements Serializable {
         this.status = status;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

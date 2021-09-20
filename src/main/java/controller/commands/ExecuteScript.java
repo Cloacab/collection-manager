@@ -13,11 +13,12 @@ public class ExecuteScript extends CommandImpl{
     public ExecuteScript() {
         name = "execute_script";
         description = "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.";
+        argType = new Class[]{String.class};
     }
 
     @Override
     public DTO<?> execute(String[] args) throws CommandExecutionFailed {
-        String[] localArgs = args.length == 0 ? this.args : args;
+        String[] localArgs = args.length == 0 ? (String[]) this.args : args;
         File file = new File(localArgs[1]);
         try(Scanner scriptScanner = new Scanner(file)) {
             Scanner userInputScanner = UserInputManager.getUserInputScanner();

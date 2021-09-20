@@ -6,13 +6,14 @@ import java.io.Serializable;
 
 public abstract class CommandImpl implements Command, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected transient SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
+    private static final long serialVersionUID = 128375098275L;
+    protected transient SpaceMarineManager spaceMarineManager;
     protected String name;
     protected String description;
-    protected String[] args = new String[0];
+    public Class[] argType = null;
+    protected Object[] args = new String[0];
 
-    public String[] getArgs() {
+    public Object[] getArgs() {
         return args;
     }
 
@@ -28,4 +29,15 @@ public abstract class CommandImpl implements Command, Serializable {
         return description;
     }
 
+    public Class<?>[] getArgType() {
+        return argType;
+    }
+
+    public void setArgType(Class<?>[] argType) {
+        this.argType = argType;
+    }
+
+    public void setSpaceMarineManager(SpaceMarineManager manager) {
+        this.spaceMarineManager = manager;
+    }
 }

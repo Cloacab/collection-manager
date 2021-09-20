@@ -4,6 +4,8 @@ import dto.DTO;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.channels.AlreadyBoundException;
+import java.nio.channels.UnresolvedAddressException;
 
 public class ClientConnection extends Connection{
 
@@ -31,6 +33,10 @@ public class ClientConnection extends Connection{
 //            datagramChannel.re
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UnresolvedAddressException e) {
+            System.out.println("Unable to connect to server.");
+        } catch (AlreadyBoundException e) {
+            System.out.println("Already bound to server.");
         }
 
         int maxConnectionsAttempts = 5;
@@ -51,21 +57,15 @@ public class ClientConnection extends Connection{
             } catch (ConnectionTimeoutException e) {
                 System.out.println(e.getMessage());
             } catch (SocketTimeoutException e) {
-                System.out.printf("Try to reconnect in 3 seconds, attempts rest: %d", maxConnectionsAttempts - currentConnectionsAttempts);
+                System.out.printf("Try to reconnect in 2 seconds, attempts rest: %d\n", maxConnectionsAttempts - currentConnectionsAttempts - 1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             currentConnectionsAttempts++;
-            try {
-                System.out.printf("Try to reconnect in 3 seconds, attempts rest: %d", maxConnectionsAttempts - currentConnectionsAttempts);
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         while (!successful && currentConnectionsAttempts < maxConnectionsAttempts);
         if (currentConnectionsAttempts >= maxConnectionsAttempts) {
-            System.out.println("Cannot connect to the server now. Restart server and client and try again.");
+            System.out.println("Cannot connect to the server now. Restart server and client and try again or type 'connect'.");
         }
     }
 }
