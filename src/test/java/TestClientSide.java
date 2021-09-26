@@ -1,20 +1,24 @@
 import client.Client;
+import controller.NotFoundEnumTypeException;
+import controller.commands.ICommand;
+import controller.commands.Info;
 import dto.DTO;
 import dto.DTOFactory;
-import model.MeleeWeapon;
 import model.SpaceMarine;
-import model.Weapon;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import server.Server;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class TestClientSide {
+    private static DTOFactory factory;
+
+    @BeforeAll
+    static void setup() {
+        factory = DTOFactory.getInstance();
+    }
 
     @Test
     public void shouldDoSmth() throws IOException, ClassNotFoundException {
@@ -37,20 +41,35 @@ public class TestClientSide {
     public void shouldDoSmt() {
         Class myClass = SpaceMarine.class;
         Object obj = "BOLT_RIFLE";
-//        Enum anEnum = Enum.valueOf(myClass, obj.toStrinng());
+//        Enum anEnum = Enum.valueOf(myClass, obj.toString());
         try {
             System.out.println(fromStringToEnum(obj, myClass));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
-    public <T extends Enum<T>> T fromStringToEnum(Object str, Class<T> enm) throws Exception {
+    public <T extends Enum<T>> T fromStringToEnum(Object str, Class<T> enm) throws NotFoundEnumTypeException {
         try {
             return (T) Enum.valueOf(enm, str.toString());
         } catch (Exception e) {
-            System.out.println("ti pidor");
-            throw new Exception("not ");
+            throw new NotFoundEnumTypeException(e.getMessage());
         }
+    }
+
+    @Test
+    public void shouldTestDtoTypeTrue() {
+        DTO<Object> dto = DTOFactory.getInstance().getDTO();
+        SpaceMarine spaceMarine = new SpaceMarine();
+        dto.setData(spaceMarine);
+        Assertions.assertTrue(dto.getData() instanceof SpaceMarine);
+    }
+
+    @Test
+    public void shouldTestDtoTypeFalse() {
+        DTO<Object> dto = factory.getDTO();
+        ICommand ICommand = new Info();
+        dto.setData(ICommand);
+        Assertions.assertFalse(dto.getData() instanceof SpaceMarine);
     }
 }

@@ -1,4 +1,4 @@
-import controller.commands.Command;
+import controller.commands.ICommand;
 import controller.commands.Show;
 import dto.DTO;
 import dto.DTOFactory;
@@ -10,14 +10,14 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-//        SpaceMarineManager spaceMarineManager = SpaceMarineManager.getInstance();
-//        SpaceMarineManager.setFileName(args.length > 0 ? args[0] : "SpaceMarineList.csv");
+//        SpaceMarineService spaceMarineManager = SpaceMarineService.getInstance();
+//        SpaceMarineService.setFileName(args.length > 0 ? args[0] : "SpaceMarineList.csv");
 //        spaceMarineManager.readFromCsv();
 //        UserInputManager.startListening();
 
         DTOFactory dtoFactory = DTOFactory.getInstance();
         DTO<SpaceMarine> dto = dtoFactory.getDTO();
-        DTO<Command> dto1 = dtoFactory.getDTO();
+        DTO<ICommand> dto1 = dtoFactory.getDTO();
         dto1.setData(new Show());
         dto.setData(new SpaceMarine());
         System.out.println(dto.getData().toString());

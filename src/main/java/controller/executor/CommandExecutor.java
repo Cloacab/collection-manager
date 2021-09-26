@@ -1,9 +1,10 @@
 package controller.executor;
 
 import controller.CommandExecutionFailed;
-import controller.commands.CommandImpl;
+import controller.commands.Command;
 import dto.DTO;
 import dto.DTOFactory;
+import dto.DTOStatus;
 import model.SpaceMarineManager;
 
 public class CommandExecutor implements Executor {
@@ -28,14 +29,14 @@ public class CommandExecutor implements Executor {
     }
 
     @Override
-    public synchronized DTO<?> execute(CommandImpl command, Object[] args) {
+    public synchronized DTO<?> execute(Command command, Object[] args) {
         command.setSpaceMarineManager(spaceMarineManager);
         DTO<?> result = DTOFactory.getInstance().getDTO();
         try {
             result = command.execute(args);
-            result.setStatus(200);
+            result.setStatus(DTOStatus.OK);
         } catch (CommandExecutionFailed e) {
-            result.setStatus(500);
+            result.setStatus(DTOStatus.NOT_OK);
             result.setMessage(e.getMessage());
             e.printStackTrace();
         }

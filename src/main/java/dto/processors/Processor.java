@@ -1,9 +1,7 @@
 package dto.processors;
 
-import dto.Packet;
-
-import java.lang.reflect.Method;
+import dto.DTO;
 
 public interface Processor {
-    public Method process(Packet packet);
+    public DTO<?> process(DTO<?> request);
 }

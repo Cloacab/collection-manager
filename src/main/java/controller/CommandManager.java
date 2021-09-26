@@ -1,7 +1,6 @@
 package controller;
 
 import controller.commands.Command;
-import controller.commands.CommandImpl;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +9,7 @@ import java.util.Set;
 
 public class CommandManager {
 
-    private final HashMap<String, Command> availableCommands = new HashMap<>();
+    private final HashMap<String, Class<? extends Command>> availableCommands = new HashMap<String, Class<? extends Command>>();
 
     private final String commandsDescription;
 
@@ -19,12 +18,12 @@ public class CommandManager {
         StringBuilder builder = new StringBuilder();
 
         Reflections reflections = new Reflections("controller.commands");
-        Set<Class<? extends CommandImpl>> commandClasses = reflections.getSubTypesOf(CommandImpl.class);
-        for (Class<? extends CommandImpl> commandClass :
+        Set<Class<? extends Command>> commandClasses = reflections.getSubTypesOf(Command.class);
+        for (Class<? extends Command> commandClass :
                 commandClasses) {
             try {
-                CommandImpl command = commandClass.getConstructor().newInstance();
-                availableCommands.put(command.getName(), command);
+                Command command = commandClass.getConstructor().newInstance();
+                availableCommands.put(command.getName(), commandClass);
                 builder.append(command.getDescription()).append("\n");
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -40,7 +39,7 @@ public class CommandManager {
         return instance;
     }
 
-    public HashMap<String, Command> getAvailableCommands() {
+    public HashMap<String, Class<? extends Command>> getAvailableCommands() {
         return availableCommands;
     }
 

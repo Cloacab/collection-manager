@@ -7,7 +7,7 @@ import model.SpaceMarine;
 
 import java.util.Map;
 
-public class Show extends CommandImpl{
+public class Show extends Command {
 
     public Show() {
         description = "show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении";
@@ -15,9 +15,9 @@ public class Show extends CommandImpl{
     }
 
     @Override
-    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
+    public DTO<?> execute(Object[] args) throws CommandExecutionFailed {
         DTO<Map<Integer, SpaceMarine>> dto = DTOFactory.getInstance().getDTO();
-        dto.setData(spaceMarineManager.spaceMarineList);
+        dto.setData(spaceMarineService.show());
 //        spaceMarineManager.spaceMarineList.entrySet()
 //              .forEach(System.out::println);
         return dto;

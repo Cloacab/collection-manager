@@ -2,8 +2,10 @@ package controller.commands;
 
 import controller.CommandExecutionFailed;
 import dto.DTO;
+import dto.DTOFactory;
+import dto.DTOStatus;
 
-public class Save extends CommandImpl{
+public class Save extends Command {
 
     public Save() {
         description = "save : сохранить коллекцию в файл";
@@ -11,8 +13,11 @@ public class Save extends CommandImpl{
     }
 
     @Override
-    public DTO<?> execute(String[] args) throws CommandExecutionFailed {
-        spaceMarineManager.writeToScv();
-        return null;
+    public DTO<?> execute(Object[] args) throws CommandExecutionFailed {
+        DTO<String> dto = DTOFactory.getInstance().getDTO();
+        String save = spaceMarineService.save();
+        dto.setData(save);
+        dto.setStatus(DTOStatus.OK);
+        return dto;
     }
 }

@@ -5,25 +5,22 @@ import controller.CommandManager;
 import controller.commands.Command;
 import model.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserInputManager {
     protected static Scanner userInputScanner = new Scanner(System.in);
     protected static boolean fromScript = false;
     protected static final CommandManager commandManager = CommandManager.getInstance();
 
-    public static HashMap<String, Command> getAvailableCommands() {
+    public static HashMap<String, Class<? extends Command>> getAvailableCommands() {
         return availableCommands;
     }
 
-    public static void setAvailableCommands(HashMap<String, Command> availableCommands) {
+    public static void setAvailableCommands(HashMap<String, Class<? extends Command>> availableCommands) {
         UserInputManager.availableCommands = availableCommands;
     }
 
-    private static HashMap<String, Command> availableCommands;
+    private static HashMap<String, Class<? extends Command>> availableCommands = CommandManager.getInstance().getAvailableCommands();
 
     private static final String INVALID_VALUE = "Invalid value for this field.";
     private static final String TRY_AGAIN_MESSAGE = "Try again.";
@@ -53,19 +50,25 @@ public class UserInputManager {
         if (!fromScript) System.out.println("Enter command or type 'help' for list of all commands.");
         while (true) {
             String userInput = userInputScanner.nextLine();
-            String userCommand = userInput.split(" ")[0];
+            String[] userInputParts = userInput.split(" ");
+            String userCommand = userInputParts[0];
             try {
-                Command command = availableCommands.get(userCommand.trim().toLowerCase(Locale.ROOT));
-                command.execute(Arrays.stream(userInput.split(" ")).toArray(String[]::new));
+                Command command = availableCommands.get(userCommand.trim().toLowerCase(Locale.ROOT)).newInstance();
+                command = validateCommand(command, userInputParts);
+                command.execute(Arrays.stream(userInput.split(" ")).toArray(Object[]::new));
             } catch (IllegalArgumentException e) {
                 setFromScript(false);
-                if(!fromScript) System.out.println("Command was not found, try again.");
+                if(!fromScript) System.out.println("ICommand was not found, try again.");
             } catch (CommandExecutionFailed e) {
                 setFromScript(false);
                 if(!fromScript) {
                     System.out.println(e.getMessage());
-                    System.out.println("Command cannot be executed, check arguments and try again.");
+                    System.out.println("ICommand cannot be executed, check arguments and try again.");
                 }
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
             if (!userInputScanner.hasNextLine() && fromScript) {
                 userInputScanner = new Scanner(System.in);
@@ -73,6 +76,55 @@ public class UserInputManager {
                 break;
             }
         }
+    }
+
+    private static Command validateCommand(Command command, String[] userCommandParts) {
+        if (command.getArgType() == null) {
+            return command;
+        }
+
+        ArrayList<Object> arguments = new ArrayList<>();
+
+        for (Class argType : command.getArgType()) {
+            if (argType == SpaceMarine.class) {
+                SpaceMarine spaceMarine = readObject();
+                arguments.add(1, spaceMarine);
+            } else if (argType == Integer.class) {
+                int key = Integer.parseInt(userCommandParts[1]);
+                arguments.add(0, key);
+            } else if (argType == Weapon.class) {
+                Weapon weapon = readWeapon();
+                arguments.add(0, weapon);
+            } else if (argType == String.class) {
+                String filename = userCommandParts[1];
+                arguments.add(0, filename);
+            }
+        }
+        command.setArgs(arguments.toArray());
+        return command;
+    }
+
+    private static Weapon readWeapon() {
+        Weapon weaponType;
+        String userInput;
+        while (true) {
+            System.out.println("Enter space marine's weapon:");
+            System.out.println("Possible variants: " + Arrays.toString(Weapon.class.getEnumConstants()) + ".");
+            System.out.print("\t->");
+            userInput = userInputScanner.nextLine();
+            if (userInput.isEmpty()) {
+                System.out.println(INVALID_VALUE + " " + INVALID_STRING + " " + TRY_AGAIN_MESSAGE);
+            } else {
+                try {
+                    weaponType = Weapon.valueOf(userInput.trim().toUpperCase(Locale.ROOT));
+                    break;
+                } catch (Exception e) {
+                    System.out.println("Cannot resolve enum constant. Try again.");
+                    continue;
+                }
+            }
+        }
+        return weaponType;
     }
 
     private static boolean isNumeric(String strNum) {

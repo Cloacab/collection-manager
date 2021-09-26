@@ -107,7 +107,8 @@ public class SpaceMarineManager {
         }
     }
 
-    public void writeToScv() {
+    public boolean writeToScv() {
+        boolean success = false;
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(fileName), ',', '"');
             writer.writeNext(header.split(","));
@@ -135,6 +136,7 @@ public class SpaceMarineManager {
             }
 
             writer.close();
+            success = true;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -142,5 +144,6 @@ public class SpaceMarineManager {
             e.printStackTrace();
             System.out.println("Unable to read file.");
         }
+        return success;
     }
 }

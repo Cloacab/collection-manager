@@ -1,12 +1,11 @@
 package dto;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 
 public class DTO <T> implements Serializable {
 
     private T data;
-    private int status;
+    private DTOStatus status;
     private String message;
     DTO() {
 
@@ -20,11 +19,11 @@ public class DTO <T> implements Serializable {
         this.data = data;
     }
 
-    public int getStatus() {
+    public DTOStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(DTOStatus status) {
         this.status = status;
     }
 

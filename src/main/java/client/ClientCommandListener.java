@@ -1,13 +1,7 @@
 package client;
 
 import connection.Connection;
-import controller.CommandExecutionFailed;
-import controller.commands.Command;
 import view.UserInputManager;
-
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Scanner;
 
 public class ClientCommandListener extends UserInputManager {
 
@@ -24,12 +18,12 @@ public class ClientCommandListener extends UserInputManager {
 //            String userInput = userInputScanner.nextLine();
 //            String userCommand = userInput.split(" ")[0];
 //            try {
-//                Command command = commandManager.getAvailableCommands().get(userCommand.trim().toLowerCase(Locale.ROOT));
+//                ICommand command = commandManager.getAvailableCommands().get(userCommand.trim().toLowerCase(Locale.ROOT));
 //
 //                connection.send();
 //            } catch (IllegalArgumentException e) {
 //                setFromScript(false);
-//                if(!fromScript) System.out.println("Command was not found, try again.");
+//                if(!fromScript) System.out.println("ICommand was not found, try again.");
 //            }
 //            if (!userInputScanner.hasNextLine() && fromScript) {
 //                userInputScanner = new Scanner(System.in);

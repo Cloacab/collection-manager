@@ -1,19 +1,19 @@
 package dto;
 
-import controller.commands.Command;
+import controller.commands.ICommand;
 import model.SpaceMarine;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 public class Packet implements Serializable {
-    private Command command = null;
+    private ICommand ICommand = null;
     private final HashMap<Integer,SpaceMarine> objects = new HashMap<>();
     private String argument = null;
     private String message = null;
 
-    public Command getCommand() {
-        return command;
+    public ICommand getCommand() {
+        return ICommand;
     }
 
     public HashMap<Integer, SpaceMarine> getObject() {
@@ -41,8 +41,8 @@ public class Packet implements Serializable {
 
         }
 
-        public Builder setCommand(Command command) {
-            Packet.this.command = command;
+        public Builder setCommand(ICommand ICommand) {
+            Packet.this.ICommand = ICommand;
             return this;
         }
 
@@ -70,7 +70,7 @@ public class Packet implements Serializable {
     @Override
     public String toString() {
         return "Packet{" +
-                "\n\tcommand=" + command +
+                "\n\tICommand=" + ICommand +
                 ",\n\t objects=" + objects +
                 ",\n\t argument='" + argument + '\'' +
                 ",\n\t message='" + message + '\'' +
