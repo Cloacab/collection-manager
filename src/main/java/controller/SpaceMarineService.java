@@ -93,11 +93,15 @@ public class SpaceMarineService {
     }
 
     public Map<Integer, SpaceMarine> printFieldDescendingMeleeWeapon() {
-        return spaceMarineManager.spaceMarineList.entrySet().stream()
+        HashMap<Integer, SpaceMarine> result = new LinkedHashMap<>();
+
+        spaceMarineManager.spaceMarineList.entrySet().stream()
                 .filter(a -> a.getValue().getMeleeWeapon() != null)
-                .sorted((a, b) -> b.getValue().getMeleeWeapon().name().compareTo(a.getValue().getMeleeWeapon().name()))
                 .sequential()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .sorted((a, b) -> b.getValue().getMeleeWeapon().getValue() - (a.getValue().getMeleeWeapon().getValue()))
+                .forEachOrdered(a -> result.put(a.getKey(), a.getValue()));
+
+        return result;
     }
 
     public String removeGreaterKey(int key) {
