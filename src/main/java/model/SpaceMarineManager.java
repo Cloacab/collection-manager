@@ -9,11 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SpaceMarineManager {
+
     private static SpaceMarineManager instance = null;
     private static String fileName;
     private static LocalDate initializationDate = null;
     private static final String header = "key,id,name,coordinates_x,coordinates_y,creationDate,health,category,weaponType,meleeWeapon,chapter_name,chapter_world";
-
     public LinkedHashMap<Integer, SpaceMarine> spaceMarineList = new LinkedHashMap<>();
 
     private SpaceMarineManager () {

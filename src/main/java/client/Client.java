@@ -3,16 +3,13 @@ package client;
 import connection.ClientConnection;
 import connection.Connection;
 import controller.CommandManager;
-import controller.commands.ICommand;
 import controller.commands.Command;
 import dto.DTO;
 import dto.DTOFactory;
 import dto.DTOStatus;
 import model.*;
-import sun.jvm.hotspot.memory.Space;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.*;
 
 public class Client {
@@ -24,7 +21,8 @@ public class Client {
     private static final String INVALID_HEALTH = "Field must be more than 0";
 
 
-    private HashMap<String, Class<? extends Command>> availableCommands = CommandManager.getInstance().getAvailableCommands();;
+    private HashMap<String, Class<? extends Command>> availableCommands = CommandManager.getInstance().getAvailableCommands();
+    ;
     private final DTOFactory dtoFactory = DTOFactory.getInstance();
     private final Scanner userInputScanner = new Scanner(System.in);
 
@@ -41,54 +39,24 @@ public class Client {
     }
 
     public void run() {
-//        connection.connect();
-        startListening2();
+        startListening();
     }
 
     public void startListening() {
-//        getCommands();
-        System.out.println("===Start listening user input===");
-        System.out.println("Enter command or type 'help' for list of all commands. Type 'connect' to connect to the serer.");
-        while (true) {
-            String userInput = userInputScanner.nextLine();
-            userCommandParts = userInput.split(" ");
-            String userCommand = userCommandParts[0];
-            if (userCommand.equals("exit")) break;
-            if (userCommand.equals("save")) {
-                System.out.println("Unavailable command for user.");
-                break;
-            }
-            if (userCommand.equals("connect")) {
-                connection.connect();
-                continue;
-            } if (userCommand.equals("load")) {
-//                getCommands();
-            }
-            try {
-                Class<? extends Command> command = availableCommands.get(userCommand.trim().toLowerCase(Locale.ROOT));
-                DTO<Class<? extends Command>> commandDTO = dtoFactory.getDTO();
-                commandDTO.setData(command);
-                connection.send(commandDTO);
-                connection.receive();
-            } catch (IllegalArgumentException e) {
-                System.out.println("ICommand was not found, try again.");
-            } catch (IOException e) {
-                System.out.println("Cannot send command to the server.");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e) {
-                System.out.println("You haven't load command list from server, type 'load' to get available commands.");
-            }
-        }
-    }
-
-    public void startListening2() {
         DTO<?> reqest = dtoFactory.getDTO();
         System.out.println("===Start listening user input===");
         while (true) {
             String userInput = userInputScanner.nextLine();
             userCommandParts = userInput.split(" ");
             String userCommand = userCommandParts[0];
+
+            if (userCommandParts[0].equalsIgnoreCase("exit")) {
+                System.exit(0);
+            } else if (userCommandParts[0].equalsIgnoreCase("save")) {
+                System.out.println("That command is unavailable for user.");
+                continue;
+            }
+
             try {
                 Class<? extends Command> commandClass = availableCommands.get(userCommand);
                 if (commandClass == null) throw new ClassNotFoundException("No such command.");
@@ -183,7 +151,7 @@ public class Client {
         return true;
     }
 
-    public SpaceMarine readObject() {
+    private SpaceMarine readObject() {
         boolean fromScript = false;
 
         String name;

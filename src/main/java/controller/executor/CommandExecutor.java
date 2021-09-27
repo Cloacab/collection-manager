@@ -29,11 +29,11 @@ public class CommandExecutor implements Executor {
     }
 
     @Override
-    public synchronized DTO<?> execute(Command command, Object[] args) {
+    public synchronized DTO<?> execute(Command command) {
         command.setSpaceMarineManager(spaceMarineManager);
         DTO<?> result = DTOFactory.getInstance().getDTO();
         try {
-            result = command.execute(args);
+            result = command.execute(new Object[]{});
             result.setStatus(DTOStatus.OK);
         } catch (CommandExecutionFailed e) {
             result.setStatus(DTOStatus.NOT_OK);
