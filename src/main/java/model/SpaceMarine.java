@@ -1,18 +1,33 @@
 package model;
 
+import org.hibernate.annotations.GeneratorType;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Entity
+@Table(name = "spacemarines")
 public class SpaceMarine implements Serializable {
+    @Id()
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    @Column(nullable = false)
     private final String name; //Поле не может быть null, Строка не может быть пустой
+    @OneToOne(targetEntity = Coordinates.class, mappedBy = "id")
     private Coordinates coordinates; //Поле не может быть null
+    @Column(nullable = false)
     private LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private long health; //Значение поля должно быть больше 0
+    @Enumerated
     private AstartesCategory category; //Поле может быть null
+    @Enumerated
+    @Column(nullable = false)
     private Weapon weaponType; //Поле не может быть null
+    @Enumerated
     private MeleeWeapon meleeWeapon; //Поле может быть null
+    @OneToOne(targetEntity = Chapter.class, mappedBy = "id")
     private Chapter chapter; //Поле не может быть null
 
     static private final AtomicInteger counter = new AtomicInteger(-1);

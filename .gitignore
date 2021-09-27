@@ -1,6 +1,6 @@
 target/
-.classpath
-.project
-.settings/
-lab05.jar
-out/
+.idea/
+
+# text files to test application
+*.txt
+*.csv

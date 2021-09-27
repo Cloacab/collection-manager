@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>ProgLab6.server</artifactId>
+    <artifactId>ProgLab7</artifactId>
     <version>0.0.1</version>
 
     <properties>
@@ -30,6 +30,14 @@
             <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-search-orm -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.9.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>

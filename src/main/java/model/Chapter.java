@@ -1,8 +1,17 @@
 package model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
+@Entity
+@Table(name = "chapters")
 public class Chapter implements Serializable {
+
+    @Id
+    private Long id;
+
     private String name; //Поле не может быть null, Строка не может быть пустой
 
     private String world; //Поле может быть null
