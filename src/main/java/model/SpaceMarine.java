@@ -20,12 +20,12 @@ public class SpaceMarine implements Serializable {
     @Column(nullable = false)
     private LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private long health; //Значение поля должно быть больше 0
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private AstartesCategory category; //Поле может быть null
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Weapon weaponType; //Поле не может быть null
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private MeleeWeapon meleeWeapon; //Поле может быть null
     @OneToOne(targetEntity = Chapter.class, mappedBy = "id")
     private Chapter chapter; //Поле не может быть null
