@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class DTO <T> implements Serializable {
 
+    private static final long serialVersionUID = 12837509435276L;
+
     private T data;
     private DTOStatus status;
     private String message;
